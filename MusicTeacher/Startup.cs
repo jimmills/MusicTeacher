@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using MusicTeacher.Managers;
 using MusicTeacher.Repos;
 
 namespace MusicTeacher
@@ -34,8 +35,9 @@ namespace MusicTeacher
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "MusicTeacher", Version = "v1" });
             });
 
-            //Add controller interface maps for DI
+            services.AddScoped<IStudentManager, StudentManager>();
             services.AddScoped<IMusicTeacherRepo, MusicTeacherRepo>();
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

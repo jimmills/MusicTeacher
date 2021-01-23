@@ -28,21 +28,35 @@ namespace MusicTeacher.Managers
             var studentDTOs = await GetStudentDTOs();
 
             //Map to Model
+            var students = new List<Student>();
+
+            //Build students collection
+            foreach(var dto in studentDTOs)
+            {
+                students.Add(GetStudentFromDTO(dto));
+            }            
             
-            
-            return new List<Student>() {
-                new Student() {Id = 1}
-            };
+            return students.AsEnumerable<Student>();
         }
 
-        protected async Task<IEnumerable<StudentDTO>> GetStudentDTOs()
+        //Get all students from the data store as DTOs
+        public async Task<IEnumerable<StudentDTO>> GetStudentDTOs()
         {
             return await _repo.GetStudents();
         }
 
-        protected Student GetStudentFromDTO(StudentDTO)
+        //Convert a studentDTO to a student
+        public Student GetStudentFromDTO(StudentDTO studentDTO)
         {
-
+            //Provide Custom Mapping Here
+            return new Student()
+            {
+                Id = studentDTO.StudentID,
+                FirstName = studentDTO.FirstName,
+                LastName = studentDTO.LastName,
+                Instrument = studentDTO.Instrument,
+                LessonWindow = studentDTO.LessonWindow
+            };
         }
 
     }

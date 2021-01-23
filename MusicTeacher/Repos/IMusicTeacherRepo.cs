@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using MusicTeacher.Models;
+using MusicTeacher.Models.DTO;
 
 namespace MusicTeacher.Repos
 {
     public interface IMusicTeacherRepo
     {
-        Task<IEnumerable<Student>> GetStudents();
+        Task<IEnumerable<StudentDTO>> GetStudents();
     }
 }
