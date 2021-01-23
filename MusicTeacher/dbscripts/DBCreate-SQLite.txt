@@ -1,0 +1,99 @@
+﻿create table "student"
+(
+    [studentID] integer primary key autoincrement not null,
+    [firstName] nvarchar(50),
+    [lastName]  nvarchar(50),
+    [instrument] nvarchar(50),
+    [lessonWindow] nvarchar(100)
+);
+
+
+insert into student(firstName, lastName, instrument, lessonWindow)
+ values ('Emily', 'Mills', 'Piano','Sunday 12:00-12:30');
+
+insert into student(firstName, lastName, instrument, lessonWindow)
+ values ('Audrey', 'Mills', 'Piano','Sunday 12:30-1:00');
+
+insert into student(firstName, lastName, instrument, lessonWindow)
+ values ('Kate', 'Mills', 'Piano','Sunday 1:00-1:30');
+
+create table "lessonPlan"
+(
+    [lessonID] integer primary key autoincrement not null,
+    [studentID] integer,
+    [startDate] text,
+    [endDate] text
+);
+
+insert into lessonPlan(studentID, startDate, endDate)
+ values (1, '2020-12-12 12:00:00.000','2020-12-12 12:30:00.000');
+
+insert into lessonPlan(studentID, startDate, endDate)
+ values (1, '2020-12-12 12:00:00.000','2020-12-19 12:30:00.000');
+
+insert into lessonPlan(studentID, startDate, endDate)
+ values (1, '2020-12-12 12:00:00.000','2020-12-26 12:30:00.000');
+
+insert into lessonPlan(studentID, startDate, endDate)
+ values (2, '2020-12-12 12:30:00.000','2020-12-12 01:00:00.000');
+
+insert into lessonPlan(studentID, startDate, endDate)
+ values (2, '2020-12-12 12:30:00.000','2020-12-19 01:00:00.000');
+
+insert into lessonPlan(studentID, startDate, endDate)
+ values (2, '2020-12-12 12:30:00.000','2020-12-26 01:00:00.000');
+
+insert into lessonPlan(studentID, startDate, endDate)
+ values (3, '2020-12-12 01:00:00.000','2020-12-12 01:30:00.000');
+
+insert into lessonPlan(studentID, startDate, endDate)
+ values (3, '2020-12-12 01:00:00.000','2020-12-19 01:30:00.000');
+
+insert into lessonPlan(studentID, startDate, endDate)
+ values (3, '2020-12-12 01:00:00.000','2020-12-26 01:30:00.000');
+
+
+create table "assignment"
+(
+    [assignmentID] integer primary key autoincrement not null,
+    [lessonID] integer,
+    [description] nvarchar(200),
+    [practiceNotes] nvarchar(500)
+);
+
+insert into assignment(lessonID, description, practiceNotes) values (1,"Scales and Chords pg 12","Watch your fingers");
+insert into assignment(lessonID, description, practiceNotes) values (1,"Solo pg 13-14","Work on your dynamics");
+insert into assignment(lessonID, description) values (1,"Theory pg 20");
+
+insert into assignment(lessonID, description, practiceNotes) values (2,"Scales and Chords pg 13","Take it slow");
+insert into assignment(lessonID, description, practiceNotes) values (2,"Solo pg 13-14","You're really close");
+insert into assignment(lessonID, description) values (2,"Theory pg 21");
+
+insert into assignment(lessonID, description, practiceNotes) values (3,"Scales and Chords pg 13","Speed it up");
+insert into assignment(lessonID, description, practiceNotes) values (3,"Solo pg 15-16","Practice hands separate");
+insert into assignment(lessonID, description) values (3,"Theory pg 22");
+
+
+insert into assignment(lessonID, description, practiceNotes) values (4,"Scales and Chords pg 1","Watch the key");
+insert into assignment(lessonID, description, practiceNotes) values (4,"Solo pg 9","Watch the stacato notes");
+insert into assignment(lessonID, description) values (4,"Theory pg 2");
+
+insert into assignment(lessonID, description, practiceNotes) values (5,"Scales and Chords pg 1","Really focus on it this week");
+insert into assignment(lessonID, description, practiceNotes) values (5,"Solo pg 10-11","Don't rush");
+insert into assignment(lessonID, description) values (5,"Theory pg 3");
+
+insert into assignment(lessonID, description, practiceNotes) values (6,"Scales and Chords pg 2","Watch out for the fingering on the chords");
+insert into assignment(lessonID, description, practiceNotes) values (6,"Solo pg 10-11","Use a metranome");
+insert into assignment(lessonID, description) values (6,"Theory pg 4");
+
+insert into assignment(lessonID, description, practiceNotes) values (7,"Scales and Chords pg 5","Keep it even start to finish");
+insert into assignment(lessonID, description, practiceNotes) values (7,"Lesson Book pg 20","Right hand is good. Left hand needs work");
+insert into assignment(lessonID, description) values (7,"Theory pg 5");
+
+insert into assignment(lessonID, description, practiceNotes) values (8,"Scales and Chords pg 6","Memorize the chords");
+insert into assignment(lessonID, description, practiceNotes) values (8,"Lesson Book pg 21-22","Focus on page 1");
+insert into assignment(lessonID, description) values (8,"Theory pg 6");
+
+insert into assignment(lessonID, description, practiceNotes) values (9,"Scales and Chords pg 6","Focus on memorizing the chords");
+insert into assignment(lessonID, description, practiceNotes) values (9,"Lesson Book pg 21-22","First page is good. Focus on the second page this week");
+insert into assignment(lessonID, description) values (9,"Theory pg 7");

@@ -1,0 +1,8 @@
+﻿--All students, lessons, and assignments
+select *
+  from student a,
+       lessonPlan b,
+       assignment c
+ where
+       a.studentID = b.studentID
+   and b.lessonID = c.lessonID;

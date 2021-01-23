@@ -1,0 +1,3 @@
+﻿drop table student;
+drop table lessonPlan;
+drop table assignment;
