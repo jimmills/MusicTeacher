@@ -23,10 +23,18 @@ namespace MusicTeacher.Controllers
         }
 
         [HttpGet]
+        [Route("", Name = "AllStudents")]
         public async Task<IActionResult> GetStudents()
         {
             _logger.LogInformation("GetStudents() method called");
             var students = await _manager.GetStudents();
+
+            //Add Links
+            //TODO: Add self link (and the code to power it through the layers)
+            foreach (var student in students)
+            {
+                student.AddLink(Url.Link("LessonsForStudent", new { studentId = student.Id }), "Lessons", "GET");
+            }
             return Ok(students);
         }
     }

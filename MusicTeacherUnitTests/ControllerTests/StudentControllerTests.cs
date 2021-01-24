@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using MusicTeacher.Managers;
 using System.Linq;
+using Microsoft.AspNetCore.Http;
 
 namespace MusicTeacherUnitTests.ControllerTests
 {
@@ -33,7 +34,13 @@ namespace MusicTeacherUnitTests.ControllerTests
                 .Returns(() => Task.FromResult(_students.AsEnumerable()));
             _manager = mockManager.Object;
 
+            var mockURL = new Mock<IUrlHelper>(); //Have to mock this because of the logic in the controller that creates links
+            mockURL
+                .Setup(m => m.Link(It.IsAny<string>(), It.IsAny<object>()))
+                .Returns("/fake/link");
+
             _controller = new StudentController(_logger, _manager);
+            _controller.Url = mockURL.Object; 
         }
 
         [Fact]

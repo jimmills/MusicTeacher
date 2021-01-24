@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace MusicTeacher.Models
 {
-    public class LessonPlan
+    public class LessonPlan : APITransferClass
     {
         public int Id { get; set; }
         public int StudentID { get; set; }

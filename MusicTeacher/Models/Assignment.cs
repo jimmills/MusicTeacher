@@ -1,7 +1,7 @@
 ﻿using System;
 namespace MusicTeacher.Models
 {
-    public class Assignment
+    public class Assignment : APITransferClass
     {
         public int Id { get; set; }
         public int LessonID { get; set; }

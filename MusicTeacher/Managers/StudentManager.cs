@@ -33,8 +33,8 @@ namespace MusicTeacher.Managers
             {
                 //Map to model
                 students.Add(GetStudentFromDTO(dto));
-            }            
-            
+            }
+
             return students.AsEnumerable<Student>();
         }
 

@@ -19,8 +19,8 @@ namespace MusicTeacherUnitTests.ControllerTests
         private LessonPlanController _controller;
 
         private List<LessonPlan> _lessonPlans = new List<LessonPlan>() {
-            new LessonPlan() { Id = 1 },
-            new LessonPlan() { Id = 2 }
+            new LessonPlan() { Id = 1, StudentID = 1 },
+            new LessonPlan() { Id = 2, StudentID = 1 }
         };
 
         public LessonPlanControllerTests()
@@ -39,7 +39,7 @@ namespace MusicTeacherUnitTests.ControllerTests
                 .Returns(() => Task.FromResult(new List<LessonPlan>().AsEnumerable()));
             mockManager
                 .Setup(m => m.GetLessonPlan(1))
-                .Returns(() => Task.FromResult(new LessonPlan() { Id = 1}));
+                .Returns(() => Task.FromResult(new LessonPlan() { Id = 1, StudentID = 1}));
             mockManager
                 .Setup(m => m.GetLessonPlan(-1))
                 .Returns(() => Task.FromResult<LessonPlan>(null));
@@ -51,8 +51,14 @@ namespace MusicTeacherUnitTests.ControllerTests
                 .Returns(() => Task.FromResult<Assignment>(null));
 
             _manager = mockManager.Object;
-            _controller = new LessonPlanController(_logger, _manager);
 
+            var mockURL = new Mock<IUrlHelper>(); //Have to mock this because of the logic in the controller that creates links
+            mockURL
+                .Setup(m => m.Link(It.IsAny<string>(), It.IsAny<object>()))
+                .Returns("/fake/link");
+
+            _controller = new LessonPlanController(_logger, _manager);
+            _controller.Url = mockURL.Object;
         }
 
         [Fact]
