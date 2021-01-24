@@ -67,6 +67,20 @@ namespace MusicTeacherUnitTests.RepoTests
         }
 
         [Fact]
+        public async Task getLessonPlansInvalidStudentReturnsEmptyList()
+        {
+            //arrange
+            int studentID = -1;
+
+            //act
+            var actionResult = await _repo.GetLessonPlans(studentID);
+            var lessonPlans = (IEnumerable<LessonPlanDTO>)actionResult;
+
+            //assert
+            Assert.Empty(lessonPlans);
+        }
+
+        [Fact]
         public async Task getLessonPlanReturnsLessonPlanDTO()
         {
             //arrange
@@ -78,6 +92,89 @@ namespace MusicTeacherUnitTests.RepoTests
 
             //assert
             Assert.Equal(lessonID, lessonPlan.LessonID);
+        }
+
+        [Fact]
+        public async Task getLessonPlanInvalidIDReturnsNull()
+        {
+            //arrange
+            int lessonID = -1;
+
+            //act
+            var actionResult = await _repo.GetLessonPlan(lessonID);
+            var lessonPlan = (LessonPlanDTO)actionResult;
+
+            //assert
+            Assert.Null(lessonPlan);
+        }
+
+        [Fact]
+        public async Task getAssignmentsReturnsDTOs()
+        {
+            //arrange
+            //act
+            var actionResult = await _repo.GetAssignments();
+            var assignments = (IEnumerable<AssignmentDTO>)actionResult;
+
+            //assert
+            Assert.NotEmpty(assignments);
+        }
+
+        [Fact]
+        public async Task getAssignmentByLessonIDReturnsDTOs()
+        {
+            //arrange
+            int lessonID = 1;
+
+            //Act
+            var actionResult = await _repo.GetAssignments(lessonID);
+            var assignments = (IEnumerable<AssignmentDTO>)actionResult;
+
+            //assert
+            Assert.NotEmpty(assignments);
+            Assert.True(assignments.All(p => p.lessonID == lessonID));
+        }
+
+        [Fact]
+        public async Task getAssignmentsNotFoundReturnsEmptyList()
+        {
+            //arrange
+            int lessonID = -1;
+
+            //Act
+            var actionResult = await _repo.GetAssignments(lessonID);
+            var assignments = (IEnumerable<AssignmentDTO>)actionResult;
+
+            //assert
+            Assert.Empty(assignments);
+        }
+
+        [Fact]
+        public async Task getAssignmentReturnsAssignment()
+        {
+            //arrange
+            int id = 1;
+
+            //act
+            var actionResult = await _repo.GetAssignment(id);
+            var assignment = (AssignmentDTO)actionResult;
+
+            //assert
+            Assert.Equal(id, assignment.assignmentID);
+        }
+
+        [Fact]
+        public async Task getAssignmentBadRequestReturnsNull()
+        {
+            //arrange
+            int id = -1;
+
+            //act
+            var actionResult = await _repo.GetAssignment(id);
+            var assignment = (AssignmentDTO)actionResult;
+
+            //assert
+            Assert.Null(assignment);
         }
     }
 }

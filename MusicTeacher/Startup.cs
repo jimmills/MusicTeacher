@@ -35,8 +35,9 @@ namespace MusicTeacher
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "MusicTeacher", Version = "v1" });
             });
 
-            services.AddScoped<IStudentManager, StudentManager>();
             services.AddScoped<IMusicTeacherRepo, MusicTeacherRepo>();
+            services.AddScoped<IStudentManager, StudentManager>();
+            services.AddScoped<ILessonPlanManager, LessonPlanManager>();
             
         }
 

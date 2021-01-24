@@ -9,12 +9,12 @@ using MusicTeacher.Repos;
 
 namespace MusicTeacher.Managers
 {
-    public class LessonManager : ILessonManager
+    public class LessonPlanManager : ILessonPlanManager
     {
-        private readonly ILogger<LessonManager> _logger;
+        private readonly ILogger<LessonPlanManager> _logger;
         private readonly IMusicTeacherRepo _repo;
 
-        public LessonManager(ILogger<LessonManager> logger, IMusicTeacherRepo repo)
+        public LessonPlanManager(ILogger<LessonPlanManager> logger, IMusicTeacherRepo repo)
         {
             _logger = logger;
             _repo = repo;
@@ -29,37 +29,51 @@ namespace MusicTeacher.Managers
             var lessonPlanDTOs = await _repo.GetLessonPlans();
 
             //Build lessonPlan collection
-            var lessonPlans = new List<LessonPlan>();
-            foreach (var dto in lessonPlanDTOs)
-            {
-                //Map to model
-                lessonPlans.Add(GetLessonPlanFromDTO(dto));
-            }
+            var lessonPlans = MapAllFromDTOs(lessonPlanDTOs);
 
             return lessonPlans.AsEnumerable();
         }
 
-        public Task<IEnumerable<LessonPlan>> GetLessonPlan(string lessonID)
+        public async Task<IEnumerable<LessonPlan>> GetLessonPlans(int studentID)
         {
-            throw new NotImplementedException();
+            var lessonPlanDTOs = await _repo.GetLessonPlans(studentID);
+            var lessonPlans = MapAllFromDTOs(lessonPlanDTOs);
+            return lessonPlans.AsEnumerable();
         }
 
-        public Task<IEnumerable<LessonPlan>> GetLessonPlans(string studentID)
+        public async Task<LessonPlan> GetLessonPlan(int lessonID)
         {
-            throw new NotImplementedException();
+            return GetLessonPlanFromDTO(await _repo.GetLessonPlan(lessonID));
         }
+
 
         //Convert a lessonPlanDTO to a lessonPlan
         public LessonPlan GetLessonPlanFromDTO(LessonPlanDTO lessonPlanDTO)
         {
+            //don't map it if null
+            if(lessonPlanDTO == null)
+            {
+                return null;
+            }
+
             //Provide Custom Mapping Here
             return new LessonPlan()
             {
-                ID = lessonPlanDTO.LessonID,
+                Id = lessonPlanDTO.LessonID,
                 StudentID = lessonPlanDTO.StudentID,
                 StartDate = lessonPlanDTO.StartDate,
                 EndDate = lessonPlanDTO.EndDate
             };
+        }
+
+        private List<LessonPlan> MapAllFromDTOs(IEnumerable<LessonPlanDTO> dtos)
+        {
+            List<LessonPlan> lessonPlans = new List<LessonPlan>();
+            foreach (var dto in dtos)
+            {
+                lessonPlans.Add(GetLessonPlanFromDTO(dto));
+            }
+            return lessonPlans;
         }
     }
 }

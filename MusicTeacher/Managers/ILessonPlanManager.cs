@@ -5,10 +5,10 @@ using MusicTeacher.Models;
 
 namespace MusicTeacher.Managers
 {
-    public interface ILessonManager
+    public interface ILessonPlanManager
     {
         Task<IEnumerable<LessonPlan>> GetLessonPlans();
-        Task<IEnumerable<LessonPlan>> GetLessonPlans(string studentID);
-        Task<IEnumerable<LessonPlan>> GetLessonPlan(string lessonID);
+        Task<IEnumerable<LessonPlan>> GetLessonPlans(int studentID);
+        Task<LessonPlan> GetLessonPlan(int lessonID);
     }
 }

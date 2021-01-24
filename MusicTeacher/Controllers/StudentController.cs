@@ -11,7 +11,7 @@ namespace MusicTeacher.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class StudentController : ControllerBase
+    public class StudentController : Controller
     {
         private readonly ILogger<StudentController> _logger;
         private readonly IStudentManager _manager;

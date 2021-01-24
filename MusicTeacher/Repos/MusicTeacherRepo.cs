@@ -16,6 +16,7 @@ namespace MusicTeacher.Repos
 
         private const string _studentSelect = @"select studentID, firstName, lastName, instrument, lessonWindow";
         private const string _lessonPlanSelect = @"select lessonID, studentID, startDate, endDate";
+        private const string _assignmentSelect = @"select assignmentID, lessonID, description, practiceNotes";
 
 
         public MusicTeacherRepo(ILogger<MusicTeacherRepo> logger, IConfiguration configuration) : this(logger, configuration.GetConnectionString("MusicTeacherDB")) { }
@@ -63,9 +64,55 @@ namespace MusicTeacher.Repos
             return await conn.QueryAsync<LessonPlanDTO>(lessonPlanQuery.ToString(), (object)lessonPlanQuery.Parms);
         }
 
-        public Task<LessonPlanDTO> GetLessonPlan(int id)
+        public async Task<LessonPlanDTO> GetLessonPlan(int id)
         {
-            throw new NotImplementedException();
+            using var conn = new SqliteConnection(_connString);
+            SelectQuery lessonPlanQuery = new SelectQuery()
+            {
+                Select = _lessonPlanSelect,
+                From = "from lessonPlan",
+                Where = "where lessonID = :lessonID"
+            };
+            lessonPlanQuery.Parms.lessonID = id;
+
+            return await conn.QuerySingleOrDefaultAsync<LessonPlanDTO>(lessonPlanQuery.ToString(), (object)lessonPlanQuery.Parms);
+        }
+
+        public async Task<IEnumerable<AssignmentDTO>> GetAssignments()
+        {
+            using var conn = new SqliteConnection(_connString);
+            var query = new SelectQuery()
+            {
+                Select = _assignmentSelect,
+                From = "from assignment"
+            };
+            return await conn.QueryAsync<AssignmentDTO>(query.ToString());
+        }
+
+        public async Task<IEnumerable<AssignmentDTO>> GetAssignments(int lessonID)
+        {
+            using var conn = new SqliteConnection(_connString);
+            var query = new SelectQuery()
+            {
+                Select = _assignmentSelect,
+                From = "from assignment",
+                Where = "where lessonID = :lessonID"
+            };
+            query.Parms.lessonID = lessonID;
+            return await conn.QueryAsync<AssignmentDTO>(query.ToString(), (object)query.Parms);
+        }
+
+        public async Task<AssignmentDTO> GetAssignment(int id)
+        {
+            using var conn = new SqliteConnection(_connString);
+            var query = new SelectQuery()
+            {
+                Select = _assignmentSelect,
+                From = "from assignment",
+                Where = "where assignmentID = :id"
+            };
+            query.Parms.id = id;
+            return await conn.QuerySingleOrDefaultAsync<AssignmentDTO>(query.ToString(), (object)query.Parms);
         }
     }
 }

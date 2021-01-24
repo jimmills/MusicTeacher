@@ -63,6 +63,7 @@ create table "assignment"
     [practiceNotes] nvarchar(500)
 );
 
+begin transaction;
 insert into assignment(lessonID, description, practiceNotes) values (1,"Scales and Chords pg 12","Watch your fingers");
 insert into assignment(lessonID, description, practiceNotes) values (1,"Solo pg 13-14","Work on your dynamics");
 insert into assignment(lessonID, description) values (1,"Theory pg 20");
@@ -99,3 +100,4 @@ insert into assignment(lessonID, description) values (8,"Theory pg 6");
 insert into assignment(lessonID, description, practiceNotes) values (9,"Scales and Chords pg 6","Focus on memorizing the chords");
 insert into assignment(lessonID, description, practiceNotes) values (9,"Lesson Book pg 21-22","First page is good. Focus on the second page this week");
 insert into assignment(lessonID, description) values (9,"Theory pg 7");
+commit;
