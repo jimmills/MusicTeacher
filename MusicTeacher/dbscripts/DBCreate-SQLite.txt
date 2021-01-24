@@ -7,7 +7,7 @@
     [lessonWindow] nvarchar(100)
 );
 
-
+begin transaction;
 insert into student(firstName, lastName, instrument, lessonWindow)
  values ('Emily', 'Mills', 'Piano','Sunday 12:00-12:30');
 
@@ -16,6 +16,7 @@ insert into student(firstName, lastName, instrument, lessonWindow)
 
 insert into student(firstName, lastName, instrument, lessonWindow)
  values ('Kate', 'Mills', 'Piano','Sunday 1:00-1:30');
+commit;
 
 create table "lessonPlan"
 (
@@ -25,6 +26,7 @@ create table "lessonPlan"
     [endDate] text
 );
 
+begin transaction;
 insert into lessonPlan(studentID, startDate, endDate)
  values (1, '2020-12-12 12:00:00.000','2020-12-12 12:30:00.000');
 
@@ -51,7 +53,7 @@ insert into lessonPlan(studentID, startDate, endDate)
 
 insert into lessonPlan(studentID, startDate, endDate)
  values (3, '2020-12-12 01:00:00.000','2020-12-26 01:30:00.000');
-
+commit;
 
 create table "assignment"
 (

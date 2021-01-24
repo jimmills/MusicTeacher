@@ -27,12 +27,11 @@ namespace MusicTeacher.Managers
             //Get the Students Raw Data
             var studentDTOs = await GetStudentDTOs();
 
-            //Map to Model
-            var students = new List<Student>();
-
             //Build students collection
-            foreach(var dto in studentDTOs)
+            var students = new List<Student>();
+            foreach (var dto in studentDTOs)
             {
+                //Map to model
                 students.Add(GetStudentFromDTO(dto));
             }            
             
