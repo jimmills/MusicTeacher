@@ -20,35 +20,77 @@ namespace MusicTeacher.Managers
             _repo = repo;
         }
 
-        //Returns All Lesson Plans
+        //Returns All Lesson Plans - this would not be appropriate for a PRD implementation
         public async Task<IEnumerable<LessonPlan>> GetLessonPlans()
         {
             _logger.LogInformation("GetLessonPlans() method called");
 
-            //Get the LessonPlan Raw Data
+            //Get the LessonPlan Raw Data - second query waits for first query because you need the IDs from query 1
             var lessonPlanDTOs = await _repo.GetLessonPlans();
+            var assignmentDTOs = await _repo.GetAssignments(lessonPlanDTOs.Select(f => f.LessonID).ToArray<int>());
 
             //Build lessonPlan collection
-            var lessonPlans = MapAllFromDTOs(lessonPlanDTOs);
+            var lessonPlans = GetLessonPlansFromDTOs(lessonPlanDTOs, assignmentDTOs);
 
             return lessonPlans.AsEnumerable();
         }
 
+        //Lesson Plans for a student
         public async Task<IEnumerable<LessonPlan>> GetLessonPlans(int studentID)
         {
-            var lessonPlanDTOs = await _repo.GetLessonPlans(studentID);
-            var lessonPlans = MapAllFromDTOs(lessonPlanDTOs);
+            //first and second query can run parallel
+            var lessonTask = _repo.GetLessonPlans(studentID);
+            var assignmentTask = _repo.GetAssignments(new int[] { studentID });
+
+            //Run both queries
+            var queryTasks = new Task[] { lessonTask, assignmentTask };
+            await Task.WhenAll(queryTasks);
+
+            //assign results
+            var lessonPlanDTOs = lessonTask.Result;
+            var assignmentDTOs = assignmentTask.Result;
+
+            //Build LessonPlan collection
+            var lessonPlans = GetLessonPlansFromDTOs(lessonPlanDTOs, assignmentDTOs);
             return lessonPlans.AsEnumerable();
         }
 
-        public async Task<LessonPlan> GetLessonPlan(int lessonID)
+        //Single Lesson Plan
+        public async Task<LessonPlan> GetLessonPlan(int Id)
         {
-            return GetLessonPlanFromDTO(await _repo.GetLessonPlan(lessonID));
+            //first and second query can run parallel
+            var lessonTask = _repo.GetLessonPlan(Id);
+            var assignmentTask = _repo.GetAssignments(new int[] { Id });
+
+            //Run both queries
+            var queryTasks = new Task[] { lessonTask, assignmentTask };
+            await Task.WhenAll(queryTasks);
+
+            //assign results
+            var lessonPlanDTO = lessonTask.Result;
+            var assignmentDTOs = assignmentTask.Result;
+
+            //Build lessonPlan
+            return GetLessonPlanFromDTO(lessonPlanDTO, assignmentDTOs);
+        }
+
+        //Assignments for a lesson
+        public async Task<IEnumerable<Assignment>> GetAssignments(int lessonID)
+        {
+            var assignmentDTOs = await _repo.GetAssignments(lessonID);
+            var assignments = MapAllAssignmentsFromDTOs(assignmentDTOs);
+            return assignments.AsEnumerable();
+        }
+
+        //Single Assignment
+        public async Task<Assignment> GetAssignment(int Id)
+        {
+            return GetAssignmentFromDTO(await _repo.GetAssignment(Id));
         }
 
 
         //Convert a lessonPlanDTO to a lessonPlan
-        public LessonPlan GetLessonPlanFromDTO(LessonPlanDTO lessonPlanDTO)
+        public LessonPlan GetLessonPlanFromDTO(LessonPlanDTO lessonPlanDTO, IEnumerable<AssignmentDTO> assignmentDTOs)
         {
             //don't map it if null
             if(lessonPlanDTO == null)
@@ -57,23 +99,79 @@ namespace MusicTeacher.Managers
             }
 
             //Provide Custom Mapping Here
-            return new LessonPlan()
+            var plan = new LessonPlan()
             {
                 Id = lessonPlanDTO.LessonID,
                 StudentID = lessonPlanDTO.StudentID,
                 StartDate = lessonPlanDTO.StartDate,
-                EndDate = lessonPlanDTO.EndDate
+                EndDate = lessonPlanDTO.EndDate,
+            };
+            //plan.Assignments.AddRange(MapAllAssignmentsFromDTOs(assignmentDTOs.Where(p => p.lessonID == plan.Id)));
+            plan.Assignments.AddRange(MapAllAssignmentsFromDTOs(assignmentDTOs));
+            return plan;
+        }
+
+        //Gets the Lesson Plans and Assignments from the DTOs
+        public List<LessonPlan> GetLessonPlansFromDTOs(IEnumerable<LessonPlanDTO> lessonPlanDTOs, IEnumerable<AssignmentDTO> assignmentDTOs)
+        {
+            ////List<LessonPlan> lessonPlans = MapAllLessonsFromDTOs(lessonPlanDTOs);
+            //foreach(var plan in lessonPlans)
+            //{
+            //    plan.Assignments.AddRange(MapAllAssignmentsFromDTOs(assignmentDTOs.Where(p => p.lessonID == plan.Id)));
+            //}
+
+            List<LessonPlan> lessonPlans = new List<LessonPlan>();
+            if (lessonPlanDTOs != null)
+            {
+                foreach (var dto in lessonPlanDTOs)
+                {
+                    lessonPlans.Add(GetLessonPlanFromDTO(dto, assignmentDTOs.Where(p => p.lessonID == dto.LessonID)));
+                }
+            }
+
+            return lessonPlans;
+        }
+
+        //private List<LessonPlan> MapAllLessonsFromDTOs(IEnumerable<LessonPlanDTO> dtos)
+        //{
+        //    List<LessonPlan> lessonPlans = new List<LessonPlan>();
+        //    foreach (var dto in dtos)
+        //    {
+        //        lessonPlans.Add(GetLessonPlanFromDTO(dto));
+        //    }
+        //    return lessonPlans;
+        //}
+
+        //Convert AssignmentDTO to Assignment
+        public Assignment GetAssignmentFromDTO(AssignmentDTO dto)
+        {
+            //Don't map if null
+            if(dto == null)
+            {
+                return null;
+            }
+
+            //Provide Custom Mapping Here
+            return new Assignment()
+            {
+                Id = dto.assignmentID,
+                LessonID = dto.lessonID,
+                Description = dto.description,
+                PracticeNotes = dto.practiceNotes
             };
         }
 
-        private List<LessonPlan> MapAllFromDTOs(IEnumerable<LessonPlanDTO> dtos)
+        private List<Assignment> MapAllAssignmentsFromDTOs(IEnumerable<AssignmentDTO> dtos)
         {
-            List<LessonPlan> lessonPlans = new List<LessonPlan>();
-            foreach (var dto in dtos)
+            List<Assignment> assignments = new List<Assignment>();
+            if (dtos != null)
             {
-                lessonPlans.Add(GetLessonPlanFromDTO(dto));
+                foreach (var dto in dtos)
+                {
+                    assignments.Add(GetAssignmentFromDTO(dto));
+                }
             }
-            return lessonPlans;
+            return assignments;
         }
     }
 }

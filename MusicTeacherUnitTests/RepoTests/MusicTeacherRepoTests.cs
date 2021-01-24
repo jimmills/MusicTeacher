@@ -176,5 +176,21 @@ namespace MusicTeacherUnitTests.RepoTests
             //assert
             Assert.Null(assignment);
         }
+
+        [Fact]
+        public async Task getAssignmentByLessonIDsReturnsDTOs()
+        {
+            //arrange
+            int[] lessonIds = new int[] { 1, 2 };
+
+            //Act
+            var actionResult = await _repo.GetAssignments(lessonIds);
+            var assignments = (IEnumerable<AssignmentDTO>)actionResult;
+
+            //assert
+            Assert.NotEmpty(assignments.Where(p => p.lessonID == lessonIds[0]));
+            Assert.NotEmpty(assignments.Where(p => p.lessonID == lessonIds[1]));
+            Assert.True(assignments.All(p => p.lessonID == lessonIds[0] || p.lessonID == lessonIds[1]));
+        }
     }
 }

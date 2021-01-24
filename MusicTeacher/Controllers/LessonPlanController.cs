@@ -22,7 +22,7 @@ namespace MusicTeacher.Controllers
             _manager = manager;
         }
 
-        
+
         [HttpGet]
         public async Task<IActionResult> GetLessonPlans()
         {
@@ -40,13 +40,31 @@ namespace MusicTeacher.Controllers
             return Ok(lessonPlans);
         }
 
-        [Route("/{Id}")]
+        [Route("{Id}")]
         [HttpGet]
         public async Task<IActionResult> GetLessonPlan(string Id)
         {
             _logger.LogInformation($"GetLessonPlan({Id}) method called");
             var lessonPlan = await _manager.GetLessonPlan(Convert.ToInt32(Id));
             return Ok(lessonPlan);
+        }
+
+        [Route("Assignment/{Id}")]
+        [HttpGet]
+        public async Task<IActionResult> GetAssignment(string Id)
+        {
+            _logger.LogInformation($"GetAssignment({Id}) method called");
+            var assignment = await _manager.GetAssignment(Convert.ToInt32(Id));
+            return Ok(assignment);
+        }
+
+        [Route("{lessonId}/Assignment")]
+        [HttpGet]
+        public async Task<IActionResult> GetAssignments(string lessonId)
+        {
+            _logger.LogInformation($"GetAssignments({lessonId}) method called");
+            var assignments = await _manager.GetAssignments(Convert.ToInt32(lessonId));
+            return Ok(assignments);
         }
     }
 }

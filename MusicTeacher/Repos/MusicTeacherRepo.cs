@@ -78,6 +78,19 @@ namespace MusicTeacher.Repos
             return await conn.QuerySingleOrDefaultAsync<LessonPlanDTO>(lessonPlanQuery.ToString(), (object)lessonPlanQuery.Parms);
         }
 
+        public async Task<AssignmentDTO> GetAssignment(int id)
+        {
+            using var conn = new SqliteConnection(_connString);
+            var query = new SelectQuery()
+            {
+                Select = _assignmentSelect,
+                From = "from assignment",
+                Where = "where assignmentID = :id"
+            };
+            query.Parms.id = id;
+            return await conn.QuerySingleOrDefaultAsync<AssignmentDTO>(query.ToString(), (object)query.Parms);
+        }
+
         public async Task<IEnumerable<AssignmentDTO>> GetAssignments()
         {
             using var conn = new SqliteConnection(_connString);
@@ -102,17 +115,17 @@ namespace MusicTeacher.Repos
             return await conn.QueryAsync<AssignmentDTO>(query.ToString(), (object)query.Parms);
         }
 
-        public async Task<AssignmentDTO> GetAssignment(int id)
+        public async Task<IEnumerable<AssignmentDTO>> GetAssignments(int[] lessonIDs)
         {
             using var conn = new SqliteConnection(_connString);
             var query = new SelectQuery()
             {
                 Select = _assignmentSelect,
                 From = "from assignment",
-                Where = "where assignmentID = :id"
+                Where = "where lessonID in :lessonIDs"
             };
-            query.Parms.id = id;
-            return await conn.QuerySingleOrDefaultAsync<AssignmentDTO>(query.ToString(), (object)query.Parms);
+            query.Parms.lessonIDs = lessonIDs;
+            return await conn.QueryAsync<AssignmentDTO>(query.ToString(), (object)query.Parms);
         }
     }
 }

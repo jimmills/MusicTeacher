@@ -32,10 +32,25 @@ namespace MusicTeacherUnitTests.ControllerTests
                 .Setup(m => m.GetLessonPlans())
                 .Returns(() => Task.FromResult(_lessonPlans.AsEnumerable()));
             mockManager
-                .Setup(m => m.GetLessonPlans(It.IsAny<int>()))
+                .Setup(m => m.GetLessonPlans(1))
                 .Returns(() => Task.FromResult(_lessonPlans.AsEnumerable()));
-            _manager = mockManager.Object;
+            mockManager
+                .Setup(m => m.GetLessonPlans(-1))
+                .Returns(() => Task.FromResult(new List<LessonPlan>().AsEnumerable()));
+            mockManager
+                .Setup(m => m.GetLessonPlan(1))
+                .Returns(() => Task.FromResult(new LessonPlan() { Id = 1}));
+            mockManager
+                .Setup(m => m.GetLessonPlan(-1))
+                .Returns(() => Task.FromResult<LessonPlan>(null));
+            mockManager
+                .Setup(m => m.GetAssignment(1))
+                .Returns(() => Task.FromResult(new Assignment() { Id = 1 }));
+            mockManager
+                .Setup(m => m.GetAssignment(-1))
+                .Returns(() => Task.FromResult<Assignment>(null));
 
+            _manager = mockManager.Object;
             _controller = new LessonPlanController(_logger, _manager);
 
         }
@@ -62,6 +77,34 @@ namespace MusicTeacherUnitTests.ControllerTests
 
             //assert
             Assert.NotEmpty(lessonPlans);
+        }
+
+        [Fact]
+        public async Task getLessonPlanByIdReturnsPlan()
+        {
+            //arrange
+            string id = "1";
+
+            //act
+            var result = await _controller.GetLessonPlan(id) as OkObjectResult;
+            var lessonPlan = result.Value as LessonPlan;
+
+            //assert
+            Assert.Equal(id, lessonPlan.Id.ToString());
+        }
+
+        [Fact]
+        public async Task getAssignmentByIdReturnsAssignment()
+        {
+            //arrange
+            string id = "1";
+
+            //act
+            var result = await _controller.GetAssignment(id) as OkObjectResult;
+            var assignment = result.Value as Assignment;
+
+            //assert
+            Assert.Equal(id, assignment.Id.ToString());
         }
     }
 }

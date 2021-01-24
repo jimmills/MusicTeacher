@@ -9,12 +9,13 @@ namespace MusicTeacher.Repos
     {
         Task<IEnumerable<StudentDTO>> GetStudents();
 
+        Task<LessonPlanDTO> GetLessonPlan(int id);
         Task<IEnumerable<LessonPlanDTO>> GetLessonPlans();
         Task<IEnumerable<LessonPlanDTO>> GetLessonPlans(int studentID);
-        Task<LessonPlanDTO> GetLessonPlan(int id);
 
+        Task<AssignmentDTO> GetAssignment(int id);
         Task<IEnumerable<AssignmentDTO>> GetAssignments();
         Task<IEnumerable<AssignmentDTO>> GetAssignments(int lessonID);
-        Task<AssignmentDTO> GetAssignment(int id);
+        Task<IEnumerable<AssignmentDTO>> GetAssignments(int[] lessonIDs);
     }
 }

@@ -9,6 +9,9 @@ namespace MusicTeacher.Managers
     {
         Task<IEnumerable<LessonPlan>> GetLessonPlans();
         Task<IEnumerable<LessonPlan>> GetLessonPlans(int studentID);
-        Task<LessonPlan> GetLessonPlan(int lessonID);
+        Task<LessonPlan> GetLessonPlan(int Id);
+
+        Task<IEnumerable<Assignment>> GetAssignments(int lessonId);
+        Task<Assignment> GetAssignment(int Id);
     }
 }
