@@ -114,12 +114,6 @@ namespace MusicTeacher.Managers
         //Gets the Lesson Plans and Assignments from the DTOs
         public List<LessonPlan> GetLessonPlansFromDTOs(IEnumerable<LessonPlanDTO> lessonPlanDTOs, IEnumerable<AssignmentDTO> assignmentDTOs)
         {
-            ////List<LessonPlan> lessonPlans = MapAllLessonsFromDTOs(lessonPlanDTOs);
-            //foreach(var plan in lessonPlans)
-            //{
-            //    plan.Assignments.AddRange(MapAllAssignmentsFromDTOs(assignmentDTOs.Where(p => p.lessonID == plan.Id)));
-            //}
-
             List<LessonPlan> lessonPlans = new List<LessonPlan>();
             if (lessonPlanDTOs != null)
             {
@@ -131,16 +125,6 @@ namespace MusicTeacher.Managers
 
             return lessonPlans;
         }
-
-        //private List<LessonPlan> MapAllLessonsFromDTOs(IEnumerable<LessonPlanDTO> dtos)
-        //{
-        //    List<LessonPlan> lessonPlans = new List<LessonPlan>();
-        //    foreach (var dto in dtos)
-        //    {
-        //        lessonPlans.Add(GetLessonPlanFromDTO(dto));
-        //    }
-        //    return lessonPlans;
-        //}
 
         //Convert AssignmentDTO to Assignment
         public Assignment GetAssignmentFromDTO(AssignmentDTO dto)

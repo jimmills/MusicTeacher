@@ -192,5 +192,35 @@ namespace MusicTeacherUnitTests.RepoTests
             Assert.NotEmpty(assignments.Where(p => p.lessonID == lessonIds[1]));
             Assert.True(assignments.All(p => p.lessonID == lessonIds[0] || p.lessonID == lessonIds[1]));
         }
+
+        [Fact]
+        public async Task addAssignementAddsDeleteAssignmentDeletes()
+        {
+            //Double Test of Insert and Delete. Not exactly a unit test, but practical. Does mutate the data if the test fails in the middle.
+            //Will be less necessary if Test DB was setup and torn down after each test run.
+            //arrange
+            var newAssignment = new AssignmentDTO()
+            {
+                lessonID = -5000,
+                description = "Test Assignemnt",
+                practiceNotes = "Test Notes"
+            };
+
+            //Act
+            var addedAssignment = await _repo.AddAssignment(newAssignment);
+
+            //Assert
+            //TODO: Build an equality function for this
+            Assert.Equal(newAssignment.lessonID, addedAssignment.lessonID);
+            Assert.Equal(newAssignment.description, addedAssignment.description);
+            Assert.Equal(newAssignment.practiceNotes, addedAssignment.practiceNotes);
+
+            //Act2
+            await _repo.DeleteAssignment(addedAssignment.assignmentID);
+            var deletedAssignemnt = await _repo.GetAssignment(addedAssignment.assignmentID);
+
+            //Assert
+            Assert.Null(deletedAssignemnt);
+        }
     }
 }

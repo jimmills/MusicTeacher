@@ -127,5 +127,26 @@ namespace MusicTeacher.Repos
             query.Parms.lessonIDs = lessonIDs;
             return await conn.QueryAsync<AssignmentDTO>(query.ToString(), (object)query.Parms);
         }
+
+        public async Task<AssignmentDTO> AddAssignment(AssignmentDTO assignment)
+        {
+            int id;
+            using (var conn = new SqliteConnection(_connString))
+            {
+                id = conn.QuerySingle<int>(@"Insert into assignment(lessonId,description, practiceNotes)
+                               values(@lessonID, @description, @practiceNotes);
+                               select last_insert_rowid()", assignment);
+                //var idobj = conn.QuerySingle("select last_insert_rowid() as id");
+                //id = assignment.assignmentID;
+
+            }
+            return await this.GetAssignment(id);
+        }
+
+        public async Task DeleteAssignment(int id)
+        {
+            using var conn = new SqliteConnection(_connString);
+            await conn.ExecuteAsync(@"Delete from assignment where assignmentId = :id", new { id = id });
+        }
     }
 }
