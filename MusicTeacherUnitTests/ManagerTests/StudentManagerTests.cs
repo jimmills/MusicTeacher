@@ -16,15 +16,17 @@ namespace MusicTeacherUnitTests.ManagerTests
         private readonly ILogger<StudentManager> _logger;
         private readonly IMusicTeacherRepo _repo;
         private StudentManager _manager;
-
-        private List<StudentDTO> _students = new List<StudentDTO>() {
-            new StudentDTO() { StudentID = 1, FirstName = "test1first"},
-            new StudentDTO() { StudentID = 2, FirstName = "test2first"}
-        };
+        private List<StudentDTO> _students;
 
         public StudentManagerTests()
         {
             _logger = new Mock<ILogger<StudentManager>>().Object;
+
+            _students = new List<StudentDTO>() {
+                new StudentDTO() { StudentID = 1, FirstName = "test1first"},
+                new StudentDTO() { StudentID = 2, FirstName = "test2first"}
+            };
+
             var mockRepo = new Mock<IMusicTeacherRepo>();
             mockRepo
                 .Setup(m => m.GetStudents())

@@ -1,4 +1,5 @@
 ﻿using System;
+
 namespace MusicTeacher.Models
 {
     public class Assignment : APITransferClass
@@ -10,6 +11,17 @@ namespace MusicTeacher.Models
 
         public Assignment()
         {
+        }
+
+        public bool IsValid()
+        {
+            //TODO: Add more validation. Probably refactor it.
+            //Lesson ID is "valid" if > 0
+            if (LessonID <= 0)
+            {
+                return false;                
+            }
+            return true;
         }
     }
 }

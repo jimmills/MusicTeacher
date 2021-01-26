@@ -130,14 +130,14 @@ namespace MusicTeacher.Repos
 
         public async Task<AssignmentDTO> AddAssignment(AssignmentDTO assignment)
         {
+            //TODO: Data should be validated prior to insert. Strings should be truncated or rejected. Lesson Id is required
+
             int id;
             using (var conn = new SqliteConnection(_connString))
             {
                 id = conn.QuerySingle<int>(@"Insert into assignment(lessonId,description, practiceNotes)
                                values(@lessonID, @description, @practiceNotes);
                                select last_insert_rowid()", assignment);
-                //var idobj = conn.QuerySingle("select last_insert_rowid() as id");
-                //id = assignment.assignmentID;
 
             }
             return await this.GetAssignment(id);
@@ -147,6 +147,26 @@ namespace MusicTeacher.Repos
         {
             using var conn = new SqliteConnection(_connString);
             await conn.ExecuteAsync(@"Delete from assignment where assignmentId = :id", new { id = id });
+        }
+
+        public async Task<LessonPlanDTO> AddLesson(LessonPlanDTO lessonPlan)
+        {
+            //TODO: Data should validate prior to insert
+
+            int id;
+            using (var conn = new SqliteConnection(_connString))
+            {
+                id = conn.QuerySingle<int>(@"Insert into lessonPlan(studentID, startDate, endDate)
+                                            values(@StudentID, @StartDate, @EndDate);
+                                            select last_insert_rowid()", lessonPlan);
+            }
+            return await this.GetLessonPlan(id);
+        }
+
+        public async Task DeleteLesson(int id)
+        {
+            using var conn = new SqliteConnection(_connString);
+            await conn.ExecuteAsync(@"Delete from lessonPlan where lessonID = :id", new { id = id });
         }
     }
 }

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using MusicTeacher.Managers;
 using MusicTeacher.Models;
+using MusicTeacher.Models.DTO;
 
 namespace MusicTeacher.Controllers
 {
@@ -86,6 +87,27 @@ namespace MusicTeacher.Controllers
             return Ok(assignment);
         }
 
+        [Route("Assignment", Name = "PostAssignment")]
+        [HttpPost]
+        public async Task<IActionResult> PostAssignment([FromBody] AssignmentDTO assignment)
+        {
+            _logger.LogInformation($"PostAssignment() method called: {assignment.lessonID}, {assignment.description}, {assignment.practiceNotes}");
+            var newAssignment = await _manager.InsertAssignment(assignment);
+            newAssignment.Links = BuildAssignmentLinks(newAssignment);
+
+            return Created(newAssignment.Links.Where(p => p.Rel == "self").FirstOrDefault().Href, newAssignment);
+        }
+
+        [Route("Assignment/{Id}", Name = "DeleteAssignment")]
+        [HttpDelete]
+        public async Task<IActionResult> DeleteAssignment(int Id)
+        {
+            _logger.LogInformation($"DeleteAssignment({Id}) method called");
+            await _manager.DeleteAssignment(Id);
+            return Ok();
+        }
+
+
         [Route("{lessonId}/Assignment", Name = "AssignmentsForLesson")]
         [HttpGet]
         public async Task<IActionResult> GetAssignments(string lessonId)
@@ -120,6 +142,9 @@ namespace MusicTeacher.Controllers
 
             //Self
             links.Add(new Link(Url.Link("GetAssignment", new { Id = assignment.Id }), "self", "GET"));
+
+            //Delete
+            links.Add(new Link(Url.Link("DeleteAssignment", new { Id = assignment.Id }), "delete", "DELETE"));
 
             return links;
         }

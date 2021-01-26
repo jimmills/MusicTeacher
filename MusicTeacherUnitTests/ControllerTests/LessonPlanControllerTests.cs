@@ -18,14 +18,16 @@ namespace MusicTeacherUnitTests.ControllerTests
         private readonly ILessonPlanManager _manager;
         private LessonPlanController _controller;
 
-        private List<LessonPlan> _lessonPlans = new List<LessonPlan>() {
-            new LessonPlan() { Id = 1, StudentID = 1 },
-            new LessonPlan() { Id = 2, StudentID = 1 }
-        };
+        private List<LessonPlan> _lessonPlans;
 
         public LessonPlanControllerTests()
         {
             _logger = new Mock<ILogger<LessonPlanController>>().Object;
+
+            _lessonPlans = new List<LessonPlan>() {
+                new LessonPlan() { Id = 1, StudentID = 1 },
+                new LessonPlan() { Id = 2, StudentID = 1 }
+            };
 
             var mockManager = new Mock<ILessonPlanManager>();
             mockManager

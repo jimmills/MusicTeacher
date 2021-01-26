@@ -19,15 +19,16 @@ namespace MusicTeacherUnitTests.ControllerTests
         private readonly IStudentManager _manager;
         private StudentController _controller;
 
-        private List<Student> _students = new List<Student>() {
-            new Student() { Id = 1, FirstName = "test1first"},
-            new Student() { Id = 2, FirstName = "test2first"}
-        };
+        private List<Student> _students;
 
         public StudentControllerTests()
         {
             _logger = new Mock<ILogger<StudentController>>().Object;
 
+            _students = new List<Student>() {
+                new Student() { Id = 1, FirstName = "test1first"},
+                new Student() { Id = 2, FirstName = "test2first"}
+            };
             var mockManager = new Mock<IStudentManager>();
             mockManager
                 .Setup(m => m.GetStudents())

@@ -222,5 +222,34 @@ namespace MusicTeacherUnitTests.RepoTests
             //Assert
             Assert.Null(deletedAssignemnt);
         }
+
+        [Fact]
+        public async Task addLessonPlanAddsDeleteAssignmentDeletes()
+        {
+            //Double Test of Insert and Delete. Not ideal, see above.
+            //arrange
+            var newLessonPlan = new LessonPlanDTO()
+            {
+                StudentID = 5000,
+                StartDate = DateTime.Now,
+                EndDate = DateTime.Now.AddMinutes(30)
+            };
+
+            //Act
+            var addedLesson = await _repo.AddLesson(newLessonPlan);
+
+            //Assert
+            //TODO: Build an equality function for this
+            Assert.Equal(newLessonPlan.StudentID, addedLesson.StudentID);
+            Assert.Equal(newLessonPlan.StartDate, addedLesson.StartDate);
+            Assert.Equal(newLessonPlan.EndDate, addedLesson.EndDate);
+
+            //Act2
+            await _repo.DeleteAssignment(addedLesson.LessonID);
+            var deletedLesson = await _repo.GetAssignment(addedLesson.LessonID);
+
+            //Assert
+            Assert.Null(deletedLesson);
+        }
     }
 }

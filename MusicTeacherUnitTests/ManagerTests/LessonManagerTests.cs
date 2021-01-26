@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -14,69 +15,19 @@ namespace MusicTeacherUnitTests.ManagerTests
 {
     public class LessonManagerTests
     {
-        private readonly ILogger<LessonPlanManager> _logger;
-        private readonly IMusicTeacherRepo _repo;
+        private ILogger<LessonPlanManager> _logger;
+        private IMusicTeacherRepo _repo;
         private LessonPlanManager _manager;
-
-        private List<LessonPlanDTO> _lessonPlans = new List<LessonPlanDTO>() {
-            new LessonPlanDTO() { LessonID = 1, StudentID = 1, StartDate= DateTime.Now, EndDate = DateTime.Now },
-            new LessonPlanDTO() { LessonID = 2, StudentID = 1, StartDate= DateTime.Now, EndDate = DateTime.Now },
-            new LessonPlanDTO() { LessonID = 3, StudentID = 2, StartDate= DateTime.Now, EndDate = DateTime.Now },
-        };
-
-        private List<LessonPlanDTO> _lessonPlansForStudent = new List<LessonPlanDTO>() {
-            new LessonPlanDTO() { LessonID = 1, StudentID = 1, StartDate= DateTime.Now, EndDate = DateTime.Now },
-            new LessonPlanDTO() { LessonID = 2, StudentID = 1, StartDate= DateTime.Now, EndDate = DateTime.Now }
-        };
-
-        private List<AssignmentDTO> _assignments = new List<AssignmentDTO>()
-        {
-            new AssignmentDTO() { assignmentID = 1, lessonID = 1 },
-            new AssignmentDTO() { assignmentID = 2, lessonID = 1 },
-            new AssignmentDTO() { assignmentID = 3, lessonID = 1 }
-        };
+        private List<LessonPlanDTO> _lessonPlans;
+        private List<LessonPlanDTO> _lessonPlansForStudent;
+        private List<AssignmentDTO> _assignments;
 
         public LessonManagerTests()
         {
             _logger = new Mock<ILogger<LessonPlanManager>>().Object;
 
             //I'm sure there's a better way to setup these mocks than putting them in the constructor
-            var mockRepo = new Mock<IMusicTeacherRepo>();
-            mockRepo
-                .Setup(m => m.GetLessonPlans())
-                .Returns(Task.FromResult<IEnumerable<LessonPlanDTO>>(_lessonPlans));
-            mockRepo
-                .Setup(m => m.GetLessonPlans(1))
-                .Returns(Task.FromResult<IEnumerable<LessonPlanDTO>>(_lessonPlansForStudent));
-            _repo = mockRepo.Object;
-            mockRepo
-                .Setup(m => m.GetLessonPlans(-1))
-                .Returns(Task.FromResult<IEnumerable<LessonPlanDTO>>(new List<LessonPlanDTO>().AsEnumerable()));
-            _repo = mockRepo.Object;
-            mockRepo
-                .Setup(m => m.GetLessonPlan(1))
-                .Returns(Task.FromResult<LessonPlanDTO>(new LessonPlanDTO() { LessonID = 1}));
-            _repo = mockRepo.Object;
-            mockRepo
-                .Setup(m => m.GetLessonPlan(-1))
-                .Returns(Task.FromResult<LessonPlanDTO>(null));
-            _repo = mockRepo.Object;
-            mockRepo
-                .Setup(m => m.GetAssignments(1))
-                .Returns(Task.FromResult<IEnumerable<AssignmentDTO>>(_assignments));
-            _repo = mockRepo.Object;
-            mockRepo
-            .Setup(m => m.GetAssignments(-1))
-            .Returns(Task.FromResult<IEnumerable<AssignmentDTO>>(new List<AssignmentDTO>().AsEnumerable()));
-                    _repo = mockRepo.Object;
-            mockRepo
-            .Setup(m => m.GetAssignment(1))
-            .Returns(Task.FromResult<AssignmentDTO>(new AssignmentDTO() { assignmentID = 1 }));
-            _repo = mockRepo.Object;
-            mockRepo
-            .Setup(m => m.GetAssignment(-1))
-            .Returns(Task.FromResult<AssignmentDTO>(null));
-            _repo = mockRepo.Object;
+            this.BeforeEachTest();
 
             _manager = new LessonPlanManager(_logger, _repo);
         }
@@ -266,5 +217,102 @@ namespace MusicTeacherUnitTests.ManagerTests
             //assert
             Assert.Null(assignment);
         }
+
+        [Fact]
+        public async Task InsertAssignmentInsertsValidAssignment()
+        {
+            //Arrange
+            var assignment = new AssignmentDTO()
+            {
+                lessonID = 1,
+                description = "Description",
+                practiceNotes = "Notes"
+            };
+
+            //Act
+            var returnedAssignment = await _manager.InsertAssignment(assignment);
+
+            //Assert
+            Assert.NotNull(returnedAssignment);
+        }
+
+        [Fact]
+        public async Task InsertAssignmentInvalidAssignemntThrowsError()
+        {
+            //Arrange
+            var assignment = new AssignmentDTO()
+            {
+                lessonID = 0, //this is an invalid value
+                description = "Description",
+                practiceNotes = "Notes"
+            };
+
+            //Act/Assert
+            await Assert.ThrowsAsync<InvalidDataException>(async () => await _manager.InsertAssignment(assignment));
+        }
+
+
+        private void BeforeEachTest()
+        {
+            _lessonPlans = new List<LessonPlanDTO>() {
+                new LessonPlanDTO() { LessonID = 1, StudentID = 1, StartDate= DateTime.Now, EndDate = DateTime.Now },
+                new LessonPlanDTO() { LessonID = 2, StudentID = 1, StartDate= DateTime.Now, EndDate = DateTime.Now },
+                new LessonPlanDTO() { LessonID = 3, StudentID = 2, StartDate= DateTime.Now, EndDate = DateTime.Now },
+            };
+
+            _lessonPlansForStudent = new List<LessonPlanDTO>() {
+                new LessonPlanDTO() { LessonID = 1, StudentID = 1, StartDate= DateTime.Now, EndDate = DateTime.Now },
+                new LessonPlanDTO() { LessonID = 2, StudentID = 1, StartDate= DateTime.Now, EndDate = DateTime.Now }
+            };
+
+            _assignments = new List<AssignmentDTO>()
+            {
+                 new AssignmentDTO() { assignmentID = 1, lessonID = 1 },
+                 new AssignmentDTO() { assignmentID = 2, lessonID = 1 },
+                new AssignmentDTO() { assignmentID = 3, lessonID = 1 }
+            };
+
+            var mockRepo = new Mock<IMusicTeacherRepo>();
+            mockRepo
+                .Setup(m => m.GetLessonPlans())
+                .Returns(Task.FromResult<IEnumerable<LessonPlanDTO>>(_lessonPlans));
+            mockRepo
+                .Setup(m => m.GetLessonPlans(1))
+                .Returns(Task.FromResult<IEnumerable<LessonPlanDTO>>(_lessonPlansForStudent));
+            _repo = mockRepo.Object;
+            mockRepo
+                .Setup(m => m.GetLessonPlans(-1))
+                .Returns(Task.FromResult<IEnumerable<LessonPlanDTO>>(new List<LessonPlanDTO>().AsEnumerable()));
+            _repo = mockRepo.Object;
+            mockRepo
+                .Setup(m => m.GetLessonPlan(1))
+                .Returns(Task.FromResult<LessonPlanDTO>(new LessonPlanDTO() { LessonID = 1 }));
+            _repo = mockRepo.Object;
+            mockRepo
+                .Setup(m => m.GetLessonPlan(-1))
+                .Returns(Task.FromResult<LessonPlanDTO>(null));
+            _repo = mockRepo.Object;
+            mockRepo
+                .Setup(m => m.GetAssignments(1))
+                .Returns(Task.FromResult<IEnumerable<AssignmentDTO>>(_assignments));
+            _repo = mockRepo.Object;
+            mockRepo
+            .Setup(m => m.GetAssignments(-1))
+            .Returns(Task.FromResult<IEnumerable<AssignmentDTO>>(new List<AssignmentDTO>().AsEnumerable()));
+            _repo = mockRepo.Object;
+            mockRepo
+            .Setup(m => m.GetAssignment(1))
+            .Returns(Task.FromResult<AssignmentDTO>(new AssignmentDTO() { assignmentID = 1 }));
+            _repo = mockRepo.Object;
+            mockRepo
+            .Setup(m => m.GetAssignment(-1))
+            .Returns(Task.FromResult<AssignmentDTO>(null));
+            mockRepo
+            .Setup(m => m.AddAssignment(It.IsAny<AssignmentDTO>()))
+            .Returns(Task.FromResult<AssignmentDTO>(new AssignmentDTO() { assignmentID = 1 }));
+
+            _repo = mockRepo.Object;
+        }
+
     }
 }

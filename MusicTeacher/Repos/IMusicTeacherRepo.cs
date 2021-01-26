@@ -13,6 +13,9 @@ namespace MusicTeacher.Repos
         Task<IEnumerable<LessonPlanDTO>> GetLessonPlans();
         Task<IEnumerable<LessonPlanDTO>> GetLessonPlans(int studentID);
 
+        Task<LessonPlanDTO> AddLesson(LessonPlanDTO lesson);
+        Task DeleteLesson(int id);
+
         Task<AssignmentDTO> GetAssignment(int id);
         Task<IEnumerable<AssignmentDTO>> GetAssignments();
         Task<IEnumerable<AssignmentDTO>> GetAssignments(int lessonID);

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -126,6 +127,20 @@ namespace MusicTeacher.Managers
             return lessonPlans;
         }
 
+        public async Task<Assignment> InsertAssignment(AssignmentDTO assignmentDTO)
+        {
+            var assignment = GetAssignmentFromDTO(assignmentDTO); 
+            //Just a basic validation - should be made more thorough
+            if (assignment.IsValid())
+            {
+                var returnData = await _repo.AddAssignment(GetDTOFromAssignment(assignment));
+                return GetAssignmentFromDTO(returnData);
+            }
+            throw new InvalidDataException("Assingment data is invalid");
+        }
+
+        public async Task DeleteAssignment(int Id) => await _repo.DeleteAssignment(Id);
+
         //Convert AssignmentDTO to Assignment
         public Assignment GetAssignmentFromDTO(AssignmentDTO dto)
         {
@@ -156,6 +171,16 @@ namespace MusicTeacher.Managers
                 }
             }
             return assignments;
+        }
+
+        private AssignmentDTO GetDTOFromAssignment(Assignment assignment)
+        {
+            return new AssignmentDTO(){
+                assignmentID = assignment.Id,
+                lessonID = assignment.LessonID,
+                description = assignment.Description,
+                practiceNotes = assignment.PracticeNotes
+            };
         }
     }
 }

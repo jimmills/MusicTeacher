@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using MusicTeacher.Models;
+using MusicTeacher.Models.DTO;
 
 namespace MusicTeacher.Managers
 {
@@ -13,5 +14,8 @@ namespace MusicTeacher.Managers
 
         Task<IEnumerable<Assignment>> GetAssignments(int lessonId);
         Task<Assignment> GetAssignment(int Id);
+
+        Task<Assignment> InsertAssignment(AssignmentDTO assignment); //Could refactor to a save method that upserts
+        Task DeleteAssignment(int Id);
     }
 }
