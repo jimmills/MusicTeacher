@@ -8,6 +8,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MusicTeacherUnitTests", "MusicTeacherUnitTests\MusicTeacherUnitTests.csproj", "{D1E49F14-B944-4D14-8159-6B756E8F7042}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A039920C-4C4B-41D8-9CF3-DAAC46BAA929}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
