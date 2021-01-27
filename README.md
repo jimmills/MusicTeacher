@@ -1,1 +1,1 @@
-# MusicTeacher
+# Music Teacher Project
