@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Moq;
+using MusicTeacher;
 using MusicTeacher.Managers;
 using MusicTeacher.Models;
 using MusicTeacher.Models.DTO;
@@ -248,7 +248,36 @@ namespace MusicTeacherUnitTests.ManagerTests
             };
 
             //Act/Assert
-            await Assert.ThrowsAsync<InvalidDataException>(async () => await _manager.InsertAssignment(assignment));
+            await Assert.ThrowsAsync<HttpResponseException>(async () => await _manager.InsertAssignment(assignment));
+        }
+
+        [Fact]
+        public async Task InsertLessonPlanInsertsValidLessonPlan()
+        {
+            //Arrange
+            var lp = new LessonPlanDTO()
+            {
+                StudentID = 1,
+                StartDate = DateTime.Now
+            };
+
+            //Act
+            var returnedLP = await _manager.InsertLessonPlan(lp);
+
+            //Assert
+            Assert.NotNull(returnedLP);
+        }
+
+        [Fact]
+        public async Task InsertLessonPlanInvalidLessonPlanThrowsError()
+        {
+            //Arrange
+            var lp = new LessonPlanDTO()
+            {
+                StudentID = -1
+            };
+            //Act/Assert
+            await Assert.ThrowsAsync<HttpResponseException>(async () => await _manager.InsertLessonPlan(lp));
         }
 
 
@@ -310,6 +339,9 @@ namespace MusicTeacherUnitTests.ManagerTests
             mockRepo
             .Setup(m => m.AddAssignment(It.IsAny<AssignmentDTO>()))
             .Returns(Task.FromResult<AssignmentDTO>(new AssignmentDTO() { assignmentID = 1 }));
+            mockRepo
+            .Setup(m => m.AddLessonPlan(It.IsAny<LessonPlanDTO>()))
+            .Returns(Task.FromResult<LessonPlanDTO>(new LessonPlanDTO() { LessonID = 1 }));
 
             _repo = mockRepo.Object;
         }

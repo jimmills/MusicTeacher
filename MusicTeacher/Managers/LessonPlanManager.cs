@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -136,10 +135,25 @@ namespace MusicTeacher.Managers
                 var returnData = await _repo.AddAssignment(GetDTOFromAssignment(assignment));
                 return GetAssignmentFromDTO(returnData);
             }
-            throw new InvalidDataException("Assingment data is invalid");
+            throw new HttpResponseException() { Status = 400, Value = "Assignment data is invalid. You should fix it and try again." };
         }
 
         public async Task DeleteAssignment(int Id) => await _repo.DeleteAssignment(Id);
+
+
+        public async Task<LessonPlan> InsertLessonPlan(LessonPlanDTO lessonPlanDTO)
+        {
+            var lessonPlan = GetLessonPlanFromDTO(lessonPlanDTO, null);
+            if (lessonPlan.IsValid())
+            {
+                var returnData = await _repo.AddLessonPlan(GetDTOFromLessonPlan(lessonPlan));
+                return GetLessonPlanFromDTO(returnData, null);
+            }
+            throw new HttpResponseException() { Status = 400, Value = "LessonPlan data is invalid. You should fix it and try again." };
+        }
+
+        public async Task DeleteLessonPlan(int Id) => await _repo.DeleteLessonPlan(Id);
+
 
         //Convert AssignmentDTO to Assignment
         public Assignment GetAssignmentFromDTO(AssignmentDTO dto)
@@ -182,5 +196,17 @@ namespace MusicTeacher.Managers
                 practiceNotes = assignment.PracticeNotes
             };
         }
+
+        private LessonPlanDTO GetDTOFromLessonPlan(LessonPlan lessonPlan)
+        {
+            return new LessonPlanDTO()
+            {
+                LessonID = lessonPlan.Id,
+                StudentID = lessonPlan.StudentID,
+                StartDate = lessonPlan.StartDate,
+                EndDate = lessonPlan.EndDate
+            };
+        }
+
     }
 }

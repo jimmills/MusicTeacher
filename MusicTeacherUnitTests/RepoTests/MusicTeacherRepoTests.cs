@@ -30,13 +30,37 @@ namespace MusicTeacherUnitTests.RepoTests
         [Fact]
         public async Task getStudentsReturnsStudentDTOs()
         {
-            //arrange
-            //act
+            //arrange/act
             var actionResult = await _repo.GetStudents();
             var students = (IEnumerable<StudentDTO>)actionResult;
 
             //assert
             Assert.NotEmpty(students);
+        }
+
+        [Fact]
+        public async Task getStudentReturnsStudentDTO()
+        {
+            //arrange
+            int studentID = 1;
+
+            //act
+            var actionResult = await _repo.GetStudent(studentID);
+            var student = (StudentDTO)actionResult;
+
+            //Assert
+            Assert.Equal(studentID, student.StudentID);
+        }
+
+        [Fact]
+        public async Task getStudentReturnsNullWhenStudentNotFound()
+        {
+            //arrange/act
+            var actionResult = await _repo.GetStudent(-1);
+            var student = (StudentDTO)actionResult;
+
+            //Assert
+            Assert.Null(student);
         }
 
         [Fact]
@@ -236,7 +260,7 @@ namespace MusicTeacherUnitTests.RepoTests
             };
 
             //Act
-            var addedLesson = await _repo.AddLesson(newLessonPlan);
+            var addedLesson = await _repo.AddLessonPlan(newLessonPlan);
 
             //Assert
             //TODO: Build an equality function for this

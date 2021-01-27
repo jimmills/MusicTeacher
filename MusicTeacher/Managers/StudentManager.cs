@@ -25,7 +25,7 @@ namespace MusicTeacher.Managers
             _logger.LogInformation("GetStudents() method called");
 
             //Get the Students Raw Data
-            var studentDTOs = await GetStudentDTOs();
+            var studentDTOs = await _repo.GetStudents();
 
             //Build students collection
             var students = new List<Student>();
@@ -38,15 +38,25 @@ namespace MusicTeacher.Managers
             return students.AsEnumerable<Student>();
         }
 
-        //Get all students from the data store as DTOs
-        public async Task<IEnumerable<StudentDTO>> GetStudentDTOs()
+        public async Task<Student> GetStudent(int id)
         {
-            return await _repo.GetStudents();
+            _logger.LogInformation($"GetStudent({id}) method called");
+
+            var studentDTO = await _repo.GetStudent(id);
+
+            return GetStudentFromDTO(studentDTO);
         }
+
 
         //Convert a studentDTO to a student
         public Student GetStudentFromDTO(StudentDTO studentDTO)
         {
+            //Don't map null
+            if(studentDTO == null)
+            {
+                return null;
+            }
+
             //Provide Custom Mapping Here
             return new Student()
             {

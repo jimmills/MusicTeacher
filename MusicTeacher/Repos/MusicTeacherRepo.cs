@@ -39,6 +39,20 @@ namespace MusicTeacher.Repos
             return await conn.QueryAsync<StudentDTO>(studentQuery.ToString());
         }
 
+        public async Task<StudentDTO> GetStudent(int id)
+        {
+            using var conn = new SqliteConnection(_connString);
+            SelectQuery studentQuery = new SelectQuery()
+            {
+                Select = _studentSelect,
+                From = "from student",
+                Where = "where studentID = :id"
+            };
+            studentQuery.Parms.id = id;
+
+            return await conn.QuerySingleOrDefaultAsync<StudentDTO>(studentQuery.ToString(), (object)studentQuery.Parms);
+        }
+
         public async Task<IEnumerable<LessonPlanDTO>> GetLessonPlans()
         {
             using var conn = new SqliteConnection(_connString);
@@ -149,7 +163,7 @@ namespace MusicTeacher.Repos
             await conn.ExecuteAsync(@"Delete from assignment where assignmentId = :id", new { id = id });
         }
 
-        public async Task<LessonPlanDTO> AddLesson(LessonPlanDTO lessonPlan)
+        public async Task<LessonPlanDTO> AddLessonPlan(LessonPlanDTO lessonPlan)
         {
             //TODO: Data should validate prior to insert
 
@@ -163,7 +177,7 @@ namespace MusicTeacher.Repos
             return await this.GetLessonPlan(id);
         }
 
-        public async Task DeleteLesson(int id)
+        public async Task DeleteLessonPlan(int id)
         {
             using var conn = new SqliteConnection(_connString);
             await conn.ExecuteAsync(@"Delete from lessonPlan where lessonID = :id", new { id = id });

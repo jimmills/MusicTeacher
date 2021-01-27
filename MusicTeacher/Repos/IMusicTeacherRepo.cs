@@ -8,13 +8,14 @@ namespace MusicTeacher.Repos
     public interface IMusicTeacherRepo
     {
         Task<IEnumerable<StudentDTO>> GetStudents();
+        Task<StudentDTO> GetStudent(int id);
 
         Task<LessonPlanDTO> GetLessonPlan(int id);
         Task<IEnumerable<LessonPlanDTO>> GetLessonPlans();
         Task<IEnumerable<LessonPlanDTO>> GetLessonPlans(int studentID);
 
-        Task<LessonPlanDTO> AddLesson(LessonPlanDTO lesson);
-        Task DeleteLesson(int id);
+        Task<LessonPlanDTO> AddLessonPlan(LessonPlanDTO lesson);
+        Task DeleteLessonPlan(int id);
 
         Task<AssignmentDTO> GetAssignment(int id);
         Task<IEnumerable<AssignmentDTO>> GetAssignments();

@@ -12,10 +12,13 @@ namespace MusicTeacher.Managers
         Task<IEnumerable<LessonPlan>> GetLessonPlans(int studentID);
         Task<LessonPlan> GetLessonPlan(int Id);
 
+        Task<LessonPlan> InsertLessonPlan(LessonPlanDTO lessonPlanDTO); //Could refactor to a save method that upserts
+        Task DeleteLessonPlan(int Id);
+
         Task<IEnumerable<Assignment>> GetAssignments(int lessonId);
         Task<Assignment> GetAssignment(int Id);
 
-        Task<Assignment> InsertAssignment(AssignmentDTO assignment); //Could refactor to a save method that upserts
+        Task<Assignment> InsertAssignment(AssignmentDTO assignment); 
         Task DeleteAssignment(int Id);
     }
 }

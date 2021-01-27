@@ -47,6 +47,7 @@ namespace MusicTeacher.Controllers
         public async Task<IActionResult> GetLessonPlans(string studentId)
         {
             _logger.LogInformation($"GetLessonPlans({studentId}) method called");
+
             var lessonPlans = await _manager.GetLessonPlans(Convert.ToInt32(studentId));
 
             foreach(LessonPlan plan in lessonPlans)
@@ -67,6 +68,9 @@ namespace MusicTeacher.Controllers
         {
             _logger.LogInformation($"GetLessonPlan({Id}) method called");
             var plan = await _manager.GetLessonPlan(Convert.ToInt32(Id));
+
+            if(plan == null) { return NotFound(); }
+
             plan.Links = this.BuildLessonPlanLinks(plan);
             foreach (var assignment in plan.Assignments)
             {
@@ -76,12 +80,36 @@ namespace MusicTeacher.Controllers
             return Ok(plan);
         }
 
+        [Route("", Name = "PostLessonPlan")]
+        [HttpPost]
+        public async Task<IActionResult> PostLessonPlan([FromBody] LessonPlanDTO lessonPlan)
+        {
+            _logger.LogInformation($"PostLessonPlan() method called: {lessonPlan.StudentID}, {lessonPlan.StartDate.ToString()}, {lessonPlan.EndDate.ToString()}");
+            var newLessonPlan = await _manager.InsertLessonPlan(lessonPlan);
+            newLessonPlan.Links = BuildLessonPlanLinks(newLessonPlan);
+
+            return Created(newLessonPlan.Links.Where(p => p.Rel == "self").FirstOrDefault().Href, newLessonPlan);
+        }
+
+        [Route("{Id}", Name = "DeleteLessonPlan")]
+        [HttpDelete]
+        public async Task<IActionResult> DeleteLessonPlan(int Id)
+        {
+            _logger.LogInformation($"DeleteLessonPlan({Id}) method called");
+            await _manager.DeleteLessonPlan(Id);
+            return Ok();
+        }
+
+
         [Route("Assignment/{Id}", Name ="GetAssignment")]
         [HttpGet]
         public async Task<IActionResult> GetAssignment(string Id)
         {
             _logger.LogInformation($"GetAssignment({Id}) method called");
             var assignment = await _manager.GetAssignment(Convert.ToInt32(Id));
+
+            if (assignment == null) { return NotFound(); }
+
             assignment.Links = BuildAssignmentLinks(assignment);
 
             return Ok(assignment);
@@ -113,14 +141,16 @@ namespace MusicTeacher.Controllers
         public async Task<IActionResult> GetAssignments(string lessonId)
         {
             _logger.LogInformation($"GetAssignments({lessonId}) method called");
-            var assignments = await _manager.GetAssignments(Convert.ToInt32(lessonId));
 
-            foreach(var assignment in assignments)
+            var lessonPlan = await _manager.GetLessonPlan(Convert.ToInt32(lessonId));
+            if(lessonPlan == null) { return NotFound(); }
+
+            foreach(var assignment in lessonPlan.Assignments)
             {
                 assignment.Links = BuildAssignmentLinks(assignment);
             }
 
-            return Ok(assignments);
+            return Ok(lessonPlan.Assignments);
         }
 
         private List<Link> BuildLessonPlanLinks(LessonPlan lessonPlan)

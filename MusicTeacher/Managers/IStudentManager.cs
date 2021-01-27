@@ -8,5 +8,6 @@ namespace MusicTeacher.Managers
     public interface IStudentManager
     {
         Task<IEnumerable<Student>> GetStudents();
+        Task<Student> GetStudent(int id);
     }
 }

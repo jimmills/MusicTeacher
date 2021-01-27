@@ -31,8 +31,14 @@ namespace MusicTeacherUnitTests.ManagerTests
             mockRepo
                 .Setup(m => m.GetStudents())
                 .Returns(Task.FromResult<IEnumerable<StudentDTO>>(_students));
-            _repo = mockRepo.Object;
+            mockRepo
+                .Setup(m => m.GetStudent(1))
+                .Returns(Task.FromResult<StudentDTO>(new StudentDTO() { StudentID = 1 }));
+            mockRepo
+                .Setup(m => m.GetStudent(-1))
+                .Returns(Task.FromResult<StudentDTO>(null));
 
+            _repo = mockRepo.Object;
             _manager = new StudentManager(_logger, _repo);
         }
 
@@ -89,6 +95,32 @@ namespace MusicTeacherUnitTests.ManagerTests
             Assert.Equal(studentDTO.LastName, student.LastName);
             Assert.Equal(studentDTO.Instrument, student.Instrument);
             Assert.Equal(studentDTO.LessonWindow, student.LessonWindow);
+        }
+
+        [Fact]
+        public async Task GetStudentGetsStudentDTO()
+        {
+            //Arrange
+            var studentID = 1;
+
+            //act
+            var student = await _manager.GetStudent(studentID);
+
+            //assert
+            Assert.NotNull(student);
+        }
+
+        [Fact]
+        public async Task GetStudentGetsNullIfNotFound()
+        {
+            //Arrange
+            var studentID = -1;
+
+            //act
+            var student = await _manager.GetStudent(studentID);
+
+            //assert
+            Assert.Null(student);
         }
     }
 }

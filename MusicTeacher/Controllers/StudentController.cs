@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using MusicTeacher.Managers;
+using MusicTeacher.Models;
 using MusicTeacher.Repos;
 
 namespace MusicTeacher.Controllers
@@ -30,12 +31,38 @@ namespace MusicTeacher.Controllers
             var students = await _manager.GetStudents();
 
             //Add Links
-            //TODO: Add self link (and the code to power it through the layers)
             foreach (var student in students)
             {
-                student.AddLink(Url.Link("LessonsForStudent", new { studentId = student.Id }), "Lessons", "GET");
+                student.Links = BuildStudentLinks(student);
             }
             return Ok(students);
+        }
+
+        [HttpGet]
+        [Route("{id}", Name = "GetStudent")]
+        public async Task<IActionResult> GetStudent(int id)
+        {
+            _logger.LogInformation($"GetStudent({id}) method called");
+            var student = await _manager.GetStudent(id);
+
+            if(student == null) { return NotFound(); }
+
+            student.Links = BuildStudentLinks(student);
+
+            return Ok(student);
+        }
+
+        private List<Link> BuildStudentLinks(Student student)
+        {
+            List<Link> links = new List<Link>();
+
+            //Self
+            links.Add(new Link(Url.Link("GetStudent", new { id = student.Id }), "self", "GET"));
+
+            //LessonPlan
+            links.Add(new Link(Url.Link("LessonsForStudent", new { studentId = student.Id }), "Lessons", "GET"));
+
+            return links;
         }
     }
 }

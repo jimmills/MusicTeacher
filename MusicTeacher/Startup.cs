@@ -29,7 +29,9 @@ namespace MusicTeacher
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services.AddControllers();
+            services.AddControllers(options =>
+                options.Filters.Add(new HttpResponseExceptionFilter()));
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "MusicTeacher", Version = "v1" });
