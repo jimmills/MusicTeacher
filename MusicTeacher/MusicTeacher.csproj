@@ -17,4 +17,10 @@
     <Folder Include="Repos\" />
     <Folder Include="Models\DTO\" />
   </ItemGroup>
+  <ItemGroup>
+    <None Remove="README.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="README.md" />
+  </ItemGroup>
 </Project>
