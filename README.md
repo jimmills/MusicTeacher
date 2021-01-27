@@ -15,10 +15,10 @@ Mostly this is clone a go, but not completely. You need to do a little work to s
 
 
 ## Notes/Assumptions
-While probably not an extensive list, here are some notes aobut the project and assumptions I made while building it:
+While probably not an extensive list, here are some notes about the project and assumptions I made while building it:
   
   1. The purpose of the application at this time is for a single music teacher to create lesson plans for their students. The lesson plans are composed of a list of assignments.
-  2. The teach only teaches 1 student at a lime, and the lesson plan cereated is applicable only to the 1 student.
+  2. The teacher only teaches 1 student at a time, and the lesson plan created is applicable only to the 1 student.
   3. Students are allowed to see and even edit the lesson plans of other students. We're high trust around here.
   4. There is minimal data validation and exception handling. If you want to break it, you probably can. So, be cool.
   5. The API's do not page data yet
