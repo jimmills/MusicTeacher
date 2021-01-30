@@ -1,0 +1,4 @@
+<a [title]= "student.firstName + ' ' + student.lastName"
+    routerLink="/student" (click)="setSelectedStudent(student)">
+    {{ student.getFullName() + ', ' + student.instrument + ', ' + student.lessonWindow}}
+</a>

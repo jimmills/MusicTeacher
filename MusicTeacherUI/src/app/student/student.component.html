@@ -1,0 +1,10 @@
+<div *ngIf="student">
+    <h2>{{ student.getFullName() }}</h2>
+    <p>{{student.instrument}}</p>
+    <button (click)="addLesson()">Add Lesson</button>
+    <div>
+        <div *ngFor="let lesson of lessons">
+            <app-lesson [lesson]="lesson"></app-lesson>
+        </div>
+    </div>
+</div>

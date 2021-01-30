@@ -38,17 +38,8 @@ namespace MusicTeacher.Managers
         //Lesson Plans for a student
         public async Task<IEnumerable<LessonPlan>> GetLessonPlans(int studentID)
         {
-            //first and second query can run parallel
-            var lessonTask = _repo.GetLessonPlans(studentID);
-            var assignmentTask = _repo.GetAssignments(new int[] { studentID });
-
-            //Run both queries
-            var queryTasks = new Task[] { lessonTask, assignmentTask };
-            await Task.WhenAll(queryTasks);
-
-            //assign results
-            var lessonPlanDTOs = lessonTask.Result;
-            var assignmentDTOs = assignmentTask.Result;
+            var lessonPlanDTOs = await _repo.GetLessonPlans(studentID);
+            var assignmentDTOs = await _repo.GetAssignments(lessonPlanDTOs.Select(s => s.LessonID).ToArray<int>());
 
             //Build LessonPlan collection
             var lessonPlans = GetLessonPlansFromDTOs(lessonPlanDTOs, assignmentDTOs);

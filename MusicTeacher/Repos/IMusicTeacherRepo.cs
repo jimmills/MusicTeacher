@@ -22,6 +22,7 @@ namespace MusicTeacher.Repos
         Task<IEnumerable<AssignmentDTO>> GetAssignments(int lessonID);
         Task<IEnumerable<AssignmentDTO>> GetAssignments(int[] lessonIDs);
 
+
         Task<AssignmentDTO> AddAssignment(AssignmentDTO assignment);
         Task DeleteAssignment(int id);
     }

@@ -18,6 +18,8 @@ namespace MusicTeacher
 {
     public class Startup
     {
+        readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -28,6 +30,15 @@ namespace MusicTeacher
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //TODO: Don't leave it this open in production
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: MyAllowSpecificOrigins,
+                                  builder =>
+                                  {
+                                      builder.WithOrigins("http://localhost:4200");
+                                  });
+            });
 
             services.AddControllers(options =>
                 options.Filters.Add(new HttpResponseExceptionFilter()));
@@ -40,7 +51,7 @@ namespace MusicTeacher
             services.AddScoped<IMusicTeacherRepo, MusicTeacherRepo>();
             services.AddScoped<IStudentManager, StudentManager>();
             services.AddScoped<ILessonPlanManager, LessonPlanManager>();
-            
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -56,6 +67,8 @@ namespace MusicTeacher
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors(MyAllowSpecificOrigins);
 
             app.UseAuthorization();
 

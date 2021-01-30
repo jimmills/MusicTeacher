@@ -1,0 +1,6 @@
+<p>Lesson Component: {{lesson.id + ', ' + lesson.startDate + ', ' + lesson.endDate + ', ' + lesson.duration}}</p>
+<div *ngFor="let assignment of lesson.assignments">
+    <app-assignment [assignment]="assignment"></app-assignment>
+</div>
+<button>Add Assignment</button>
+
