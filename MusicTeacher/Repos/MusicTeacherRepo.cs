@@ -168,11 +168,14 @@ namespace MusicTeacher.Repos
             //TODO: Data should validate prior to insert
 
             int id;
+            DateTimeOffset? startWithOffset = DateTimeOffsetConversion(lessonPlan.StartDate);
+            DateTimeOffset? endWithOffset = DateTimeOffsetConversion(lessonPlan.EndDate);
+
             using (var conn = new SqliteConnection(_connString))
             {
                 id = conn.QuerySingle<int>(@"Insert into lessonPlan(studentID, startDate, endDate)
                                             values(@StudentID, @StartDate, @EndDate);
-                                            select last_insert_rowid()", lessonPlan);
+                                            select last_insert_rowid()",new { StudentID = lessonPlan.StudentID, StartDate = startWithOffset, EndDate = endWithOffset });
             }
             return await this.GetLessonPlan(id);
         }
@@ -181,6 +184,18 @@ namespace MusicTeacher.Repos
         {
             using var conn = new SqliteConnection(_connString);
             await conn.ExecuteAsync(@"Delete from lessonPlan where lessonID = :id", new { id = id });
+        }
+
+        private DateTimeOffset? DateTimeOffsetConversion(DateTime? date)
+        {
+            if (date.HasValue)
+            {
+                return new DateTimeOffset((DateTime)date);
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }

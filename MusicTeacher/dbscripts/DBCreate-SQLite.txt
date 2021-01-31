@@ -28,31 +28,31 @@ create table "lessonPlan"
 
 begin transaction;
 insert into lessonPlan(studentID, startDate, endDate)
- values (1, '2020-12-12 12:00:00.000','2020-12-12 12:30:00.000');
+ values (1, '2020-12-12 12:00:00.000-06:00','2020-12-12 12:30:00.000-06:00');
 
 insert into lessonPlan(studentID, startDate, endDate)
- values (1, '2020-12-12 12:00:00.000','2020-12-19 12:30:00.000');
+ values (1, '2020-12-19 12:00:00.000-06:00','2020-12-19 12:30:00.000-06:00');
 
 insert into lessonPlan(studentID, startDate, endDate)
- values (1, '2020-12-12 12:00:00.000','2020-12-26 12:30:00.000');
+ values (1, '2020-12-26 12:00:00.000-06:00','2020-12-26 12:30:00.000-06:00');
 
 insert into lessonPlan(studentID, startDate, endDate)
- values (2, '2020-12-12 12:30:00.000','2020-12-12 01:00:00.000');
+ values (2, '2020-12-12 12:30:00.000-06:00','2020-12-12 01:00:00.000-06:00');
 
 insert into lessonPlan(studentID, startDate, endDate)
- values (2, '2020-12-12 12:30:00.000','2020-12-19 01:00:00.000');
+ values (2, '2020-12-19 12:30:00.000-06:00','2020-12-19 01:00:00.000-06:00');
 
 insert into lessonPlan(studentID, startDate, endDate)
- values (2, '2020-12-12 12:30:00.000','2020-12-26 01:00:00.000');
+ values (2, '2020-12-26 12:30:00.000-06:00','2020-12-26 01:00:00.000-06:00');
 
 insert into lessonPlan(studentID, startDate, endDate)
- values (3, '2020-12-12 01:00:00.000','2020-12-12 01:30:00.000');
+ values (3, '2020-12-12 01:00:00.000-06:00','2020-12-12 01:30:00.000-06:00');
 
 insert into lessonPlan(studentID, startDate, endDate)
- values (3, '2020-12-12 01:00:00.000','2020-12-19 01:30:00.000');
+ values (3, '2020-12-19 01:00:00.000-06:00','2020-12-19 01:30:00.000-06:00');
 
 insert into lessonPlan(studentID, startDate, endDate)
- values (3, '2020-12-12 01:00:00.000','2020-12-26 01:30:00.000');
+ values (3, '2020-12-26 01:00:00.000-06:00','2020-12-26 01:30:00.000-06:00');
 commit;
 
 create table "assignment"
@@ -60,7 +60,12 @@ create table "assignment"
     [assignmentID] integer primary key autoincrement not null,
     [lessonID] integer,
     [description] nvarchar(200),
-    [practiceNotes] nvarchar(500)
+    [practiceNotes] nvarchar(500),
+
+    Constraint fk_lessonPlans
+      foreign key(lessonID)
+      References lessonPlan(lessonID)
+      On Delete Cascade
 );
 
 begin transaction;

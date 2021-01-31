@@ -1,5 +1,4 @@
 import { Component, OnInit, Input } from '@angular/core';
-
 import { Student } from '../models/student.model';
 import { StateService } from '../services/state.service';
 import { MusicTeacherAPIService } from '../services/music-teacher-api.service';
@@ -27,7 +26,7 @@ export class StudentComponent implements OnInit {
   addLesson(lesson: Lesson) {
     //post the new lesson back to the api, which will return a new lesson object
     this.dataSvc.addLessonToStudent(this.student, lesson)
-    .subscribe(lesson =>  this.lessons = [...this.lessons, lesson]); //Add the lesson to the lessons collection
+    .subscribe(lesson => this.lessons = [...this.lessons, lesson]); //Add the lesson to the lessons collection
   }
 
   deleteLesson(id: number) {

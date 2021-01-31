@@ -34,6 +34,7 @@ export class AddLessonModalComponent {
   saveLesson(){
     //Prepare the Lesson object
     let newLesson:Lesson = new Lesson();
+    let date = new Date();
     newLesson.startDate = new Date(this.date.year, this.date.month-1, this.date.day, this.startTime.hour, this.startTime.minute);
     newLesson.endDate = new Date(newLesson.startDate.getTime() + this.duration*60000);
 

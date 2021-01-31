@@ -17,6 +17,9 @@ export class AddAssignmentModalComponent {
   constructor(private modalService: NgbModal) { }
 
   open(content) {
+    this.description = '';
+    this.notes = '';
+    
     this.modalService.open(content).result.then(
       (result) => {
       this.saveAssignment()}
