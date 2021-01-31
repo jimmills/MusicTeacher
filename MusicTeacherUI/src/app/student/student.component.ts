@@ -1,8 +1,10 @@
 import { Component, OnInit, Input } from '@angular/core';
+
 import { Student } from '../models/student.model';
 import { StateService } from '../services/state.service';
 import { MusicTeacherAPIService } from '../services/music-teacher-api.service';
 import { Lesson } from '../models/lesson.model';
+
 
 @Component({
   selector: 'app-student',
@@ -22,8 +24,23 @@ export class StudentComponent implements OnInit {
     }
   }
 
-  addLesson() {
-    window.alert('add the lesson already!');
+  addLesson(lesson: Lesson) {
+    //post the new lesson back to the api, which will return a new lesson object
+    this.dataSvc.addLessonToStudent(this.student, lesson)
+    .subscribe(lesson =>  this.lessons = [...this.lessons, lesson]); //Add the lesson to the lessons collection
+  }
+
+  deleteLesson(id: number) {
+    if(confirm("Are you sure you want to delete this lesson?")){
+      //delete the lesson
+      this.dataSvc.deleteLesson(id).subscribe(
+
+        //remove lesson from the collection - future refactor: lazy load lessons and reload collection instead of mutating it
+        () => this.lessons = this.lessons.filter(lesson => lesson.id !== id)      
+      );
+    }
+
+
   }
 
 }

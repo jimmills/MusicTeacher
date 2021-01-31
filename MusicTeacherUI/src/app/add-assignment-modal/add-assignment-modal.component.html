@@ -1,0 +1,23 @@
+<ng-template #content let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title" id="add-assignment-modal-title">Add Assignment</h4>
+      <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <form>
+        <div class="form-group">
+            <label for="description">Assignment Description</label>
+            <input class="form-control" [(ngModel)]="description" name="description"/>
+            <label for="practiceNotes">Practice Notes</label>
+            <textarea class="form-control" [(ngModel)]="notes" name="practiceNotes"></textarea>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-primary" (click)="modal.close()">Save</button>
+    </div>
+  </ng-template>
+
+  <button type="button" class="btn btn-outline-success btn-sm" (click)="open(content)">Add Assignment</button>

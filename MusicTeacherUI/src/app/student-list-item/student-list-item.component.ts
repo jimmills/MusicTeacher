@@ -10,7 +10,7 @@ import { Student } from '../models/student.model';
   styleUrls: ['./student-list-item.component.css']
 })
 export class StudentListItemComponent implements OnInit {
-  @Input() student;
+  @Input() student:Student;
 
   constructor(private state: StateService) { }
 

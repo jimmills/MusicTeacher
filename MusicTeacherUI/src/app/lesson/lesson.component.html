@@ -1,6 +1,26 @@
-<p>Lesson Component: {{lesson.id + ', ' + lesson.startDate + ', ' + lesson.endDate + ', ' + lesson.duration}}</p>
-<div *ngFor="let assignment of lesson.assignments">
-    <app-assignment [assignment]="assignment"></app-assignment>
+<div>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope ="col">#</th>
+                <th scope ="col">Assignment</th>
+                <th scope ="col">Practice Notes</th>
+                <th scope ="col"></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let assignment of lesson.assignments; index as i">
+                <th scope="row">{{ i + 1 }}</th>
+                <td>{{ assignment.description }}</td>
+                <td>{{ assignment.practiceNotes }}</td>
+                <td>
+                    <button type="button" class="btn btn-outline-danger btn-sm" (click)="deleteAssignment(assignment.id)"> X </button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <div *ngIf="lesson.assignments === undefined || lesson.assignments.length == 0">
+        <p>No assignments have been added for this lesson.</p>
+    </div>
+    <app-add-assignment-modal (onAddAssignment)="addAssignment($event)"></app-add-assignment-modal>
 </div>
-<button>Add Assignment</button>
-

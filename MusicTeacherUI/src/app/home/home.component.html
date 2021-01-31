@@ -1,8 +1,26 @@
 <h1>Students</h1>
 
-<ul>
-    <li *ngFor="let student of students">
-        <app-student-list-item [student]="student"></app-student-list-item>
-    </li>
-</ul>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th scope ="col">Name</th>
+            <th scope ="col">Instrument</th>
+            <th scope ="col">Lesson Window</th>
+            <th scope ="col"></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let student of students">
+            <th scope="row">{{ student.getFullName() }}</th>
+            <td>{{ student.instrument }}</td>
+            <td>{{ student.lessonWindow }}</td>
+            <td>
+                <a [title]= "student.getFullName()"
+                    routerLink="/student" (click)="setSelectedStudent(student)">
+                    View
+                </a>
+            </td>
+        </tr>
+    </tbody>
+</table>
 

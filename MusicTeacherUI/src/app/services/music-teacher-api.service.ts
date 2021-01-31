@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import {catchError, map} from 'rxjs/operators';
 
@@ -7,10 +7,18 @@ import { Student } from '../models/student.model';
 import { Lesson } from '../models/lesson.model';
 import { Assignment } from '../models/assignment.model';
 
+const httpOptions = {
+  headers: new HttpHeaders({
+    'Content-Type':  'application/json'
+  })
+};
+
 @Injectable({
   providedIn: 'root'
 })
 export class MusicTeacherAPIService {
+
+
   constructor(private http: HttpClient) { }
 
   public getStudents(): Observable<Student[]> {
@@ -26,6 +34,46 @@ export class MusicTeacherAPIService {
     return this.http.get<Lesson[]>(`https://localhost:5001/LessonPlan/Student/${studentid}`).pipe(
       map(data => data.map(data => new Lesson().deserialize(data))),
       catchError(() => throwError('Lessons unavailable'))
+    );
+  }
+
+  public addLessonToStudent(student: Student, lesson: Lesson) : Observable<Lesson>{
+    const postData = {
+      lessonID: 0,
+      studentID: student.id,
+      startDate: lesson.startDate,
+      endDate: lesson.endDate
+    }
+    return this.http.post<Lesson>(`https://localhost:5001/LessonPlan`, postData, httpOptions).pipe(
+       map(data => new Lesson().deserialize(data)),
+       catchError(() => throwError('Failed to add new lesson'))
+    );
+  }
+
+  public deleteLesson(id: number) : Observable<{}>{
+    return this.http.delete(`https://localhost:5001/LessonPlan/${id}`, httpOptions)
+    .pipe(
+      catchError(() => throwError('Failed to delete lesson'))
+    );
+  }
+
+  public addAssignmentToLesson(lesson: Lesson, assignment: Assignment) : Observable<Assignment>{
+    const postData = {
+      assignmentID: 0,
+      lessonID: lesson.id,
+      description: assignment.description,
+      practiceNotes: assignment.practiceNotes
+    }
+    return this.http.post<Lesson>(`https://localhost:5001/LessonPlan/Assignment`, postData, httpOptions).pipe(
+       map(data => new Assignment().deserialize(data)),
+       catchError(() => throwError('Failed to add new lesson'))
+    );
+  }
+
+  public deleteAssignment(id: number) : Observable<{}>{
+    return this.http.delete(`https://localhost:5001/LessonPlan/Assignment/${id}`, httpOptions)
+    .pipe(
+      catchError(() => throwError('Failed to delete assignment'))
     );
   }
 

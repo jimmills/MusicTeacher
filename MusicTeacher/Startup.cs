@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Net.Http.Headers;
 using Microsoft.OpenApi.Models;
 using MusicTeacher.Managers;
 using MusicTeacher.Repos;
@@ -36,7 +37,10 @@ namespace MusicTeacher
                 options.AddPolicy(name: MyAllowSpecificOrigins,
                                   builder =>
                                   {
-                                      builder.WithOrigins("http://localhost:4200");
+                                      builder
+                                      .WithOrigins("http://localhost:4200")
+                                      .AllowAnyHeader()
+                                      .AllowAnyMethod();
                                   });
             });
 

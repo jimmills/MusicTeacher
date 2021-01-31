@@ -1,4 +1,9 @@
-<a [title]= "student.firstName + ' ' + student.lastName"
-    routerLink="/student" (click)="setSelectedStudent(student)">
-    {{ student.getFullName() + ', ' + student.instrument + ', ' + student.lessonWindow}}
-</a>
+<th scope="row">{{ student.getFullName() }}</th>
+<td>{{ student.instrument }}</td>
+<td>{{ student.lessonWindow }}</td>
+<td>
+    <a [title]= "student.getFullName()"
+        routerLink="/student" (click)="setSelectedStudent(student)">
+        View
+    </a>
+</td>

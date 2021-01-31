@@ -1,10 +1,26 @@
 <div *ngIf="student">
-    <h2>{{ student.getFullName() }}</h2>
-    <p>{{student.instrument}}</p>
-    <button (click)="addLesson()">Add Lesson</button>
-    <div>
-        <div *ngFor="let lesson of lessons">
-            <app-lesson [lesson]="lesson"></app-lesson>
+    <div class="jumbotron jumbotron-fluid">
+        <div class="container">
+            <h2>{{ student.getFullName() }}</h2>
+            <p class="lead">{{student.instrument}} - {{student.lessonWindow}}</p>
+            <app-add-lesson-modal [student]="student" (onAddLesson)="addLesson($event)"></app-add-lesson-modal>
         </div>
+    </div>
+
+    <div>
+        <h2>Lessons</h2>
+        <ngb-accordion #acc="ngbAccordion">
+            <ngb-panel *ngFor="let lesson of lessons" id="{{'lesson' + lesson.id}}">
+                <ng-template ngbPanelHeader>
+                    <div class="d-flex align-items-center justify-content-between">
+                        <button ngbPanelToggle class="btn btn-link">{{lesson.getStartDatePrettyString() + ' - ' + lesson.getEndDatePrettyString()}}</button>
+                        <button class="btn btn-danger btn-sm" (click)="deleteLesson(lesson.id)">Delete Lesson</button>
+                    </div>
+                </ng-template>
+                <ng-template ngbPanelContent>
+                    <app-lesson [lesson]="lesson"></app-lesson>
+                </ng-template>                
+            </ngb-panel>
+        </ngb-accordion>
     </div>
 </div>
