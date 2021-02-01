@@ -1,5 +1,4 @@
 import { Deserializable } from './deserializable.model';
-//import { Lesson } from './lesson.model';
 
 export class Student implements Deserializable {
     public id: number;
@@ -12,7 +11,7 @@ export class Student implements Deserializable {
     deserialize(input: any): this {
         return Object.assign(this, input);
 
-        //Map in the lessons -- may not be necessary
+        //Map in the lessons -- not necessary as currently designed
         //this.lessons = input.lessons.map(lesson => new Lesson().deserialize(lesson));
     }
 

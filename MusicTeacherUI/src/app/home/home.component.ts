@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-//import { Observable } from 'rxjs';
 import { MusicTeacherAPIService } from '../services/music-teacher-api.service';
 import { StateService } from '../services/state.service';
-import { StudentListItemComponent } from '../student-list-item/student-list-item.component';
 import { Student } from '../models/student.model';
 
 @Component({

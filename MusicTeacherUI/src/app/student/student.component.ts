@@ -19,14 +19,20 @@ export class StudentComponent implements OnInit {
   ngOnInit(): void {
     this.student = this.state.SelectedStudent;
     if(this.student){
-      this.dataSvc.getLessonsByStudent(this.student.id).subscribe(lessons => this.lessons = lessons);
+      //this.dataSvc.getLessonsByStudent(this.student.id).subscribe(lessons => this.lessons = lessons)
+      this.dataSvc.getLessonsByStudent(this.student.id).subscribe(lessons => { 
+        this.lessons = this.sortLessonByDateDesc(lessons); 
+      })
+      
     }
   }
 
   addLesson(lesson: Lesson) {
     //post the new lesson back to the api, which will return a new lesson object
     this.dataSvc.addLessonToStudent(this.student, lesson)
-    .subscribe(lesson => this.lessons = [...this.lessons, lesson]); //Add the lesson to the lessons collection
+    .subscribe(lesson => { 
+      this.lessons =  this.sortLessonByDateDesc([...this.lessons, lesson]); //Add the lesson to the lessons collection
+    }); 
   }
 
   deleteLesson(id: number) {
@@ -38,8 +44,10 @@ export class StudentComponent implements OnInit {
         () => this.lessons = this.lessons.filter(lesson => lesson.id !== id)      
       );
     }
+  }
 
-
+  private sortLessonByDateDesc(lessons :Lesson[]){
+    return lessons.sort((a,b) =>  b.startDate.valueOf() - a.startDate.valueOf());
   }
 
 }

@@ -1,7 +1,7 @@
-import { Lesson.Model } from './lesson.model';
+import { Lesson } from './lesson.model';
 
-describe('Lesson.Model', () => {
+describe('Lesson', () => {
   it('should create an instance', () => {
-    expect(new Lesson.Model()).toBeTruthy();
+    expect(new Lesson()).toBeTruthy();
   });
 });

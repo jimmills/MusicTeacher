@@ -1,5 +1,5 @@
+import { HttpClientXsrfModule } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { LessonComponent } from './lesson.component';
 
 describe('LessonComponent', () => {

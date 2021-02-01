@@ -1,9 +1,0 @@
-<th scope="row">{{ student.getFullName() }}</th>
-<td>{{ student.instrument }}</td>
-<td>{{ student.lessonWindow }}</td>
-<td>
-    <a [title]= "student.getFullName()"
-        routerLink="/student" (click)="setSelectedStudent(student)">
-        View
-    </a>
-</td>

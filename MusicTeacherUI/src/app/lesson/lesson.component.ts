@@ -2,7 +2,6 @@ import { Component, OnInit, Input } from '@angular/core';
 import { MusicTeacherAPIService } from '../services/music-teacher-api.service';
 import { Lesson } from '../models/lesson.model';
 import { Assignment } from '../models/assignment.model';
-import { IfStmt } from '@angular/compiler';
 
 @Component({
   selector: 'app-lesson',

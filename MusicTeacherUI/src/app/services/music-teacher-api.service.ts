@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import {catchError, map} from 'rxjs/operators';
+import { environment } from '../../environments/environment'
 
 import { Student } from '../models/student.model';
 import { Lesson } from '../models/lesson.model';
@@ -23,7 +24,7 @@ export class MusicTeacherAPIService {
 
   public getStudents(): Observable<Student[]> {
 
-    return this.http.get<Student[]>(`https://localhost:5001/Student`).pipe(
+    return this.http.get<Student[]>(environment.apiEndpoint +`/Student`).pipe(
       map(data => data.map(data => new Student().deserialize(data))),
       catchError(() => throwError('Students unavailable'))
     );
@@ -31,7 +32,7 @@ export class MusicTeacherAPIService {
   }
 
   public getLessonsByStudent(studentid: number): Observable<Lesson[]> {
-    return this.http.get<Lesson[]>(`https://localhost:5001/LessonPlan/Student/${studentid}`).pipe(
+    return this.http.get<Lesson[]>(environment.apiEndpoint +`/LessonPlan/Student/${studentid}`).pipe(
       map(data => data.map(data => new Lesson().deserialize(data))),
       catchError(() => throwError('Lessons unavailable'))
     );
@@ -44,14 +45,14 @@ export class MusicTeacherAPIService {
       startDate: lesson.startDate,
       endDate: lesson.endDate
     }
-    return this.http.post<Lesson>(`https://localhost:5001/LessonPlan`, postData, httpOptions).pipe(
+    return this.http.post<Lesson>(environment.apiEndpoint +`/LessonPlan`, postData, httpOptions).pipe(
        map(data => new Lesson().deserialize(data)),
        catchError(() => throwError('Failed to add new lesson'))
     );
   }
 
   public deleteLesson(id: number) : Observable<{}>{
-    return this.http.delete(`https://localhost:5001/LessonPlan/${id}`, httpOptions)
+    return this.http.delete(environment.apiEndpoint + `/LessonPlan/${id}`, httpOptions)
     .pipe(
       catchError(() => throwError('Failed to delete lesson'))
     );
@@ -64,14 +65,14 @@ export class MusicTeacherAPIService {
       description: assignment.description,
       practiceNotes: assignment.practiceNotes
     }
-    return this.http.post<Lesson>(`https://localhost:5001/LessonPlan/Assignment`, postData, httpOptions).pipe(
+    return this.http.post<Lesson>(environment.apiEndpoint + `/LessonPlan/Assignment`, postData, httpOptions).pipe(
        map(data => new Assignment().deserialize(data)),
        catchError(() => throwError('Failed to add new lesson'))
     );
   }
 
   public deleteAssignment(id: number) : Observable<{}>{
-    return this.http.delete(`https://localhost:5001/LessonPlan/Assignment/${id}`, httpOptions)
+    return this.http.delete(environment.apiEndpoint + `/LessonPlan/Assignment/${id}`, httpOptions)
     .pipe(
       catchError(() => throwError('Failed to delete assignment'))
     );
