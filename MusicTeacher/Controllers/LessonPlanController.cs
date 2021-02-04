@@ -97,7 +97,7 @@ namespace MusicTeacher.Controllers
         {
             _logger.LogInformation($"DeleteLessonPlan({Id}) method called");
             await _manager.DeleteLessonPlan(Id);
-            return Ok();
+            return NoContent();
         }
 
 
@@ -132,7 +132,7 @@ namespace MusicTeacher.Controllers
         {
             _logger.LogInformation($"DeleteAssignment({Id}) method called");
             await _manager.DeleteAssignment(Id);
-            return Ok();
+            return NoContent();
         }
 
 
